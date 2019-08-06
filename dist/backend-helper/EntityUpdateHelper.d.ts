@@ -1,5 +1,6 @@
 import { BaseEntity, EntityMetadata, ObjectLiteral } from 'typeorm';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
+import { GQLFileInput } from "./types/GQLFileInput";
 declare type HelperOptions = {
     ignore: Array<string>;
     fileSavePath: string | null;
@@ -16,7 +17,7 @@ export declare class EntityUpdateHelper<ORM> {
     static update<ORM extends BaseEntity>(entity: ORM, data: any, options?: Partial<HelperOptions>): Promise<void>;
     constructor();
     _updateEntity(): Promise<void>;
-    saveFileField(field: string, value: any): void;
+    saveFileField(field: string, value: GQLFileInput): void;
     updateRelationById(field: string, value: any): Promise<void>;
     updateRelationByIdCascade(field: string, value: any): Promise<void>;
     updateRelatedEntitiesByIds(field: string, ids: []): Promise<void>;

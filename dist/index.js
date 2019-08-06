@@ -5,4 +5,6 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./backend-helper/BaseAdminResourceResolver"));
 __export(require("./backend-helper/EntityUpdateHelper"));
+var GQLFileInput_1 = require("./backend-helper/types/GQLFileInput");
+exports.GQLFileInput = GQLFileInput_1.GQLFileInput;
 //# sourceMappingURL=index.js.map

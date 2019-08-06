@@ -9,6 +9,7 @@ import { saveFile } from './utils/saveFile'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import { isObject } from './utils/isObject'
 import { ApolloError } from 'apollo-server-errors'
+import {GQLFileInput} from "./types/GQLFileInput";
 type HelperOptions={
     ignore: Array<string>
     fileSavePath:string|null
@@ -32,7 +33,7 @@ export class EntityUpdateHelper<ORM> {
         helper.entity = entity
         helper.EntityClass = entity.constructor
         helper.data = data
-        helper.options = Object.assign( defaultOptions,options)
+        helper.options = Object.assign( defaultOptions,options || {})
         //@ts-ignore
         return helper._updateEntity()
     }
@@ -125,7 +126,7 @@ export class EntityUpdateHelper<ORM> {
             entity[p] = data[p]
         }
     }
-    saveFileField(field: string, value: any) {
+    saveFileField(field: string, value: GQLFileInput) {
         let fieldName = field.substr(0, field.length - 5)
         if (!this.options.fileSavePath) throw new Error("Please specify filesSavePath in helper options")
         //@ts-ignore

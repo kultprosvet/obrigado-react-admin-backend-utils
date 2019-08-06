@@ -1,7 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs'
+import {GQLFileInput} from "../types/GQLFileInput";
 const uuidv1 = require('uuid/v1')
-export const saveFile = (file: any, folder: string) => {
+export const saveFile = (file: GQLFileInput, folder: string) => {
     //@ts-ignore
     let mainPath = path.dirname(require.main.filename)
     let appPath = path.normalize(`${mainPath}/..`)

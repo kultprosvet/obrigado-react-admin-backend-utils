@@ -12,7 +12,7 @@ class EntityUpdateHelper {
         helper.entity = entity;
         helper.EntityClass = entity.constructor;
         helper.data = data;
-        helper.options = Object.assign(defaultOptions, options);
+        helper.options = Object.assign(defaultOptions, options || {});
         //@ts-ignore
         return helper._updateEntity();
     }
