@@ -7,7 +7,7 @@ const apollo_server_errors_1 = require("apollo-server-errors");
 class EntityUpdateHelper {
     constructor() { }
     static async update(entity, data, options) {
-        const defaultOptions = { ignore: [], fileSavePath: null };
+        const defaultOptions = { ignore: [], fileSavePath: null, fileBaseUrl: null };
         let helper = new EntityUpdateHelper();
         helper.entity = entity;
         helper.EntityClass = entity.constructor;
@@ -98,9 +98,11 @@ class EntityUpdateHelper {
     saveFileField(field, value) {
         let fieldName = field.substr(0, field.length - 5);
         if (!this.options.fileSavePath)
-            throw new Error("Please specify filesSavePath in helper options");
+            throw new Error("Please specify fileSavePath in helper options");
+        if (!this.options.fileBaseUrl)
+            throw new Error("Please specify fileBaseUrl in helper options");
         //@ts-ignore
-        this.entity[fieldName] = saveFile_1.saveFile(value, `${this.options.fileSavePath}`);
+        this.entity[fieldName] = `${this.options.fileBaseUrl}/${saveFile_1.saveFile(value, this.options.fileSavePath)}`;
     }
     async updateRelationById(field, value) {
         let fieldName = field.substr(0, field.length - 3);

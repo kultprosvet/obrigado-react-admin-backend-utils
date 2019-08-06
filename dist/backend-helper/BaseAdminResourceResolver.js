@@ -19,7 +19,7 @@ const EntityUpdateHelper_1 = require("./EntityUpdateHelper");
 const GQLReactAdminListParams_1 = require("./types/GQLReactAdminListParams");
 const GQLReactAdminGetManyReferenceParams_1 = require("./types/GQLReactAdminGetManyReferenceParams");
 const IdsList_1 = require("./types/IdsList");
-function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, fileSavePath) {
+function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHelperOptions) {
     //@ts-ignore
     const suffix = ORMEntity.name;
     let entityAlias = suffix.toLowerCase();
@@ -95,7 +95,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, fileSave
             let entity = await ORMEntity.findOne({ where: { id } });
             if (!entity)
                 throw new apollo_server_errors_1.ApolloError('Entity not found for id ' + id, 'NOT_FOUND');
-            await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, { fileSavePath });
+            await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, updateHelperOptions);
             await entity.save();
             return entity;
         }
@@ -105,7 +105,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, fileSave
                 .whereInIds(ids)
                 .getMany();
             for (let entity of list) {
-                await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, { fileSavePath });
+                await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, updateHelperOptions);
                 await entity.save();
             }
             return { ids };
@@ -114,7 +114,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, fileSave
         async create(data) {
             // @ts-ignore
             let entity = ORMEntity.create();
-            await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, { fileSavePath });
+            await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, updateHelperOptions);
             await entity.save();
             return entity;
         }

@@ -1,20 +1,21 @@
 import { BaseEntity, EntityMetadata, ObjectLiteral } from 'typeorm';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 import { GQLFileInput } from "./types/GQLFileInput";
-declare type HelperOptions = {
+export declare type EntityUpdateHelperOptions = {
     ignore: Array<string>;
     fileSavePath: string | null;
+    fileBaseUrl: string | null;
 };
 export declare class EntityUpdateHelper<ORM> {
     EntityClass: any;
     entity: ORM;
     data: any;
-    options: HelperOptions;
+    options: EntityUpdateHelperOptions;
     relations: {
         [key: string]: RelationMetadata;
     };
     metadata: EntityMetadata;
-    static update<ORM extends BaseEntity>(entity: ORM, data: any, options?: Partial<HelperOptions>): Promise<void>;
+    static update<ORM extends BaseEntity>(entity: ORM, data: any, options?: Partial<EntityUpdateHelperOptions>): Promise<void>;
     constructor();
     _updateEntity(): Promise<void>;
     saveFileField(field: string, value: GQLFileInput): void;
@@ -29,4 +30,3 @@ export declare class EntityUpdateHelper<ORM> {
     arrayToObject(data: Array<any>, key?: string): ObjectLiteral;
     getFieldName(f: string): string;
 }
-export {};
