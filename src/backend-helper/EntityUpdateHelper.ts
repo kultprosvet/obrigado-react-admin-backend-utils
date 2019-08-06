@@ -8,7 +8,7 @@ import { saveFile } from './utils/saveFile'
 
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import { isObject } from './utils/isObject'
-import { ApolloError } from 'apollo-server'
+import { ApolloError } from 'apollo-server-errors'
 type HelperOptions={
     ignore: Array<string>
     fileSavePath:string|null

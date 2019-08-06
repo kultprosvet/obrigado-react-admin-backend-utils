@@ -1,9 +1,8 @@
 "use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAdminResourceResolver_1 = require("./backend-helper/BaseAdminResourceResolver");
-const EntityUpdateHelper_1 = require("./backend-helper/EntityUpdateHelper");
-exports.default = {
-    createBaseCrudResolver: BaseAdminResourceResolver_1.createBaseCrudResolver,
-    EntityUpdateHelper: EntityUpdateHelper_1.EntityUpdateHelper
-};
+__export(require("./backend-helper/BaseAdminResourceResolver"));
+__export(require("./backend-helper/EntityUpdateHelper"));
 //# sourceMappingURL=index.js.map

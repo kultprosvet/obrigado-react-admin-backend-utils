@@ -19,7 +19,7 @@ import {
 } from 'typeorm'
 
 
-import { ApolloError } from 'apollo-server'
+import { ApolloError } from 'apollo-server-errors'
 import { EntityUpdateHelper } from './EntityUpdateHelper'
 import {GQLReactAdminListParams} from "./types/GQLReactAdminListParams";
 import {GQLReactAdminGetManyReferenceParams} from "./types/GQLReactAdminGetManyReferenceParams";

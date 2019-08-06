@@ -1,6 +1,6 @@
 {
   "name": "react-admin-helper",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",
   "types" : "dist/index.d.ts",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/kultprosvet/react-admin-helper#readme",
   "dependencies": {
-    "apollo-server": "^2.8.1",
+    "apollo-server-errors": "^2.3.1",
     "type-graphql": "^0.17.4",
     "typeorm": "^0.2.18",
     "uuid": "^3.3.2"

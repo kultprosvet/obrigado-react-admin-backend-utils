@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
-const apollo_server_1 = require("apollo-server");
+const apollo_server_errors_1 = require("apollo-server-errors");
 const EntityUpdateHelper_1 = require("./EntityUpdateHelper");
 const GQLReactAdminListParams_1 = require("./types/GQLReactAdminListParams");
 const GQLReactAdminGetManyReferenceParams_1 = require("./types/GQLReactAdminGetManyReferenceParams");
@@ -94,7 +94,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, fileSave
             // @ts-ignore
             let entity = await ORMEntity.findOne({ where: { id } });
             if (!entity)
-                throw new apollo_server_1.ApolloError('Entity not found for id ' + id, 'NOT_FOUND');
+                throw new apollo_server_errors_1.ApolloError('Entity not found for id ' + id, 'NOT_FOUND');
             await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, { fileSavePath });
             await entity.save();
             return entity;
@@ -141,7 +141,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, fileSave
                 }
             }
             if (errors.length > 0) {
-                throw new apollo_server_1.ApolloError(errors.join(';'), 'DELETION_FAILED');
+                throw new apollo_server_errors_1.ApolloError(errors.join(';'), 'DELETION_FAILED');
             }
             return { ids: removedIds };
         }
@@ -284,7 +284,7 @@ async function validateEntityRelations(entityClass, id) {
         }
     }
     if (errors.length > 0) {
-        throw new apollo_server_1.ApolloError(`Entity ${id} has linked data : ${errors.join(',')}, unlink it first`, 'DELETION_FAILED');
+        throw new apollo_server_errors_1.ApolloError(`Entity ${id} has linked data : ${errors.join(',')}, unlink it first`, 'DELETION_FAILED');
     }
     //@ts-ignore
     return dataCounts;

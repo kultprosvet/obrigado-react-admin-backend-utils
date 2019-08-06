@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const saveFile_1 = require("./utils/saveFile");
 const isObject_1 = require("./utils/isObject");
-const apollo_server_1 = require("apollo-server");
+const apollo_server_errors_1 = require("apollo-server-errors");
 class EntityUpdateHelper {
     constructor() { }
     static async update(entity, data, options) {
@@ -53,7 +53,7 @@ class EntityUpdateHelper {
             //update to many relation
             if (p.endsWith('_ids') && !relations[fieldName].isCascadeUpdate) {
                 if (isNew) {
-                    throw new apollo_server_1.ApolloError(`Unable to set non cascade relation ${this.metadata.name}.${p} for new entity. You need to save the entity first`, 'INVALID_DATA');
+                    throw new apollo_server_errors_1.ApolloError(`Unable to set non cascade relation ${this.metadata.name}.${p} for new entity. You need to save the entity first`, 'INVALID_DATA');
                 }
                 await this.updateRelatedEntitiesByIds(p, data[p]);
                 continue;
@@ -68,7 +68,7 @@ class EntityUpdateHelper {
                 }
                 else {
                     if (isNew) {
-                        throw new apollo_server_1.ApolloError(`Unable to set non cascade relation ${this.metadata.name}.${p} for new entity. You need to save the entity first`, 'INVALID_DATA');
+                        throw new apollo_server_errors_1.ApolloError(`Unable to set non cascade relation ${this.metadata.name}.${p} for new entity. You need to save the entity first`, 'INVALID_DATA');
                     }
                     await this.updateRelationsEntities(p, data[p]);
                 }
@@ -81,7 +81,7 @@ class EntityUpdateHelper {
                 }
                 else {
                     if (isNew) {
-                        throw new apollo_server_1.ApolloError(`Unable to set non cascade relation ${this.metadata.name}.${p} for new entity. You need to save the entity first`, 'INVALID_DATA');
+                        throw new apollo_server_errors_1.ApolloError(`Unable to set non cascade relation ${this.metadata.name}.${p} for new entity. You need to save the entity first`, 'INVALID_DATA');
                     }
                     await this.updateRelatedEntity(p, data[p]);
                 }
@@ -89,7 +89,7 @@ class EntityUpdateHelper {
             }
             //set single property
             if (!columnNames.includes(p)) {
-                throw new apollo_server_1.ApolloError(`Entity ${this.metadata.name}.${p} doesn't have column ${p}`, 'INVALID_DATA');
+                throw new apollo_server_errors_1.ApolloError(`Entity ${this.metadata.name}.${p} doesn't have column ${p}`, 'INVALID_DATA');
             }
             //@ts-ignore
             entity[p] = data[p];
