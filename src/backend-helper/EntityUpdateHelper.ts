@@ -10,15 +10,16 @@ import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import { isObject } from './utils/isObject'
 import { ApolloError } from 'apollo-server-errors'
 import {GQLFileInput} from "./types/GQLFileInput";
-type HelperOptions={
+export type EntityUpdateHelperOptions={
     ignore: Array<string>
     fileSavePath:string|null
+    fileBaseUrl:string|null
 }
 export class EntityUpdateHelper<ORM> {
     EntityClass: any
     entity: ORM
     data: any
-    options: HelperOptions
+    options: EntityUpdateHelperOptions
     relations: {
         [key: string]: RelationMetadata
     }
@@ -26,9 +27,9 @@ export class EntityUpdateHelper<ORM> {
     static async update<ORM extends BaseEntity>(
         entity: ORM,
         data: any,
-        options?:Partial<HelperOptions> ,
+        options?:Partial<EntityUpdateHelperOptions>,
     ): Promise<void> {
-        const defaultOptions={ ignore: []  ,fileSavePath:null }
+        const defaultOptions={ ignore: []  ,fileSavePath:null,fileBaseUrl:null }
         let helper = new EntityUpdateHelper()
         helper.entity = entity
         helper.EntityClass = entity.constructor
@@ -128,9 +129,10 @@ export class EntityUpdateHelper<ORM> {
     }
     saveFileField(field: string, value: GQLFileInput) {
         let fieldName = field.substr(0, field.length - 5)
-        if (!this.options.fileSavePath) throw new Error("Please specify filesSavePath in helper options")
+        if (!this.options.fileSavePath) throw new Error("Please specify fileSavePath in helper options")
+        if (!this.options.fileBaseUrl) throw new Error("Please specify fileBaseUrl in helper options")
         //@ts-ignore
-        this.entity[fieldName] = saveFile(value, `${this.options.fileSavePath}`)
+        this.entity[fieldName] = `${this.options.fileBaseUrl}/${saveFile(value, this.options.fileSavePath)}`
     }
     async updateRelationById(field: string, value: any) {
         let fieldName = field.substr(0, field.length - 3)

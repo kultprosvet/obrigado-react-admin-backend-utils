@@ -4,20 +4,15 @@ import {GQLFileInput} from "../types/GQLFileInput";
 const uuidv1 = require('uuid/v1')
 export const saveFile = (file: GQLFileInput, folder: string) => {
     //@ts-ignore
-    let mainPath = path.dirname(require.main.filename)
-    let appPath = path.normalize(`${mainPath}/..`)
     let ext = path.extname(file.file_name)
 
     let buff = new Buffer(file.body.replace(/^data.*base64,/, ''), 'base64')
-    let dir = `${appPath}/frontend/static/content`
+    let dir = folder
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir)
     }
-    dir = `${appPath}/frontend/static/content/${folder}`
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir)
-    }
+
     let fileName = `${uuidv1()}${ext}`
     fs.writeFileSync(`${dir}/${fileName}`, buff)
-    return `/static/content/${folder}/${fileName}`
+    return fileName
 }

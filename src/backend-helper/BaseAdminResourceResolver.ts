@@ -20,7 +20,7 @@ import {
 
 
 import { ApolloError } from 'apollo-server-errors'
-import { EntityUpdateHelper } from './EntityUpdateHelper'
+import {EntityUpdateHelper, EntityUpdateHelperOptions} from './EntityUpdateHelper'
 import {GQLReactAdminListParams} from "./types/GQLReactAdminListParams";
 import {GQLReactAdminGetManyReferenceParams} from "./types/GQLReactAdminGetManyReferenceParams";
 import {IdsList} from "./types/IdsList";
@@ -31,7 +31,7 @@ export function createBaseCrudResolver<
     T extends ClassType,
     T2 extends ClassType,
     O extends ClassType<BaseEntity>,
->(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,fileSavePath?:string):typeof ReactAdminDataProvider {
+>(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):typeof ReactAdminDataProvider {
     //@ts-ignore
     const suffix = ORMEntity.name
     let entityAlias = suffix.toLowerCase()
@@ -152,7 +152,7 @@ export function createBaseCrudResolver<
                     'Entity not found for id ' + id,
                     'NOT_FOUND',
                 )
-            await EntityUpdateHelper.update(entity, data,{fileSavePath})
+            await EntityUpdateHelper.update(entity, data,updateHelperOptions)
             await entity.save()
             return entity
         }
@@ -169,7 +169,7 @@ export function createBaseCrudResolver<
                 .whereInIds(ids)
                 .getMany()
             for (let entity of list) {
-                await EntityUpdateHelper.update(entity, data,{fileSavePath})
+                await EntityUpdateHelper.update(entity, data,updateHelperOptions)
                 await entity.save()
             }
 
@@ -181,7 +181,7 @@ export function createBaseCrudResolver<
         async create(@Arg('data', type => inputTypeCls) data: T2) {
             // @ts-ignore
             let entity = ORMEntity.create()
-            await EntityUpdateHelper.update(entity, data,{fileSavePath})
+            await EntityUpdateHelper.update(entity, data,updateHelperOptions)
             await entity.save()
             return entity
         }
