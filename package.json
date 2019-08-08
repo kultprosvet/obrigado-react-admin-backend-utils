@@ -1,5 +1,5 @@
 {
-  "name": "react-admin-helper",
+  "name": "obrigado-react-admin-server",
   "version": "1.0.6",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",

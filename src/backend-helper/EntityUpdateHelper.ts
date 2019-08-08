@@ -9,17 +9,14 @@ import { saveFile } from './utils/saveFile'
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import { isObject } from './utils/isObject'
 import { ApolloError } from 'apollo-server-errors'
-import {GQLFileInput} from "./types/GQLFileInput";
-export type EntityUpdateHelperOptions={
-    ignore: Array<string>
-    fileSavePath:string|null
-    fileBaseUrl:string|null
-}
+
 export class EntityUpdateHelper<ORM> {
     EntityClass: any
     entity: ORM
     data: any
-    options: EntityUpdateHelperOptions
+    options?: {
+        ignore: Array<string>
+    }
     relations: {
         [key: string]: RelationMetadata
     }
@@ -27,14 +24,13 @@ export class EntityUpdateHelper<ORM> {
     static async update<ORM extends BaseEntity>(
         entity: ORM,
         data: any,
-        options?:Partial<EntityUpdateHelperOptions>,
+        options = { ignore: [] as string[] },
     ): Promise<void> {
-        const defaultOptions={ ignore: []  ,fileSavePath:null,fileBaseUrl:null }
         let helper = new EntityUpdateHelper()
         helper.entity = entity
         helper.EntityClass = entity.constructor
         helper.data = data
-        helper.options = Object.assign( defaultOptions,options || {})
+        helper.options = options
         //@ts-ignore
         return helper._updateEntity()
     }
@@ -64,16 +60,12 @@ export class EntityUpdateHelper<ORM> {
                 this.saveFileField(p, data[p])
                 continue
             }
-            if (p.endsWith('_id') && !relations[fieldName].isCascadeUpdate) {
-                await this.updateRelationById(p, data[p])
-                continue
-            }
-            if (p.endsWith('_id') && relations[fieldName].isCascadeUpdate) {
-                await this.updateRelationByIdCascade(p, data[p])
-                continue
-            }
+
             //update to many relation
-            if (p.endsWith('_ids') && !relations[fieldName].isCascadeUpdate) {
+            if (
+                p.endsWith('_ids') &&
+                !this.getRelation(fieldName).isCascadeUpdate
+            ) {
                 if (isNew) {
                     throw new ApolloError(
                         `Unable to set non cascade relation ${this.metadata.name}.${p} for new entity. You need to save the entity first`,
@@ -83,12 +75,15 @@ export class EntityUpdateHelper<ORM> {
                 await this.updateRelatedEntitiesByIds(p, data[p])
                 continue
             }
-            if (p.endsWith('_ids') && relations[fieldName].isCascadeUpdate) {
+            if (
+                p.endsWith('_ids') &&
+                this.getRelation(fieldName).isCascadeUpdate
+            ) {
                 await this.updateRelatedEntitiesByIdsCascade(p, data[p])
                 continue
             }
             if (Array.isArray(data[p])) {
-                if (this.relations[fieldName].isCascadeUpdate) {
+                if (this.getRelation(fieldName).isCascadeUpdate) {
                     await this.updateRelationsEntitiesCascade(p, data[p])
                 } else {
                     if (isNew) {
@@ -102,7 +97,7 @@ export class EntityUpdateHelper<ORM> {
                 continue
             }
             if (isObject(data[p])) {
-                if (relations[fieldName].isCascadeUpdate) {
+                if (this.getRelation(fieldName).isCascadeUpdate) {
                     //@ts-ignore
                     entity[p] = data[p]
                 } else {
@@ -127,30 +122,12 @@ export class EntityUpdateHelper<ORM> {
             entity[p] = data[p]
         }
     }
-    saveFileField(field: string, value: GQLFileInput) {
+    saveFileField(field: string, value: any) {
         let fieldName = field.substr(0, field.length - 5)
-        if (!this.options.fileSavePath) throw new Error("Please specify fileSavePath in helper options")
-        if (!this.options.fileBaseUrl) throw new Error("Please specify fileBaseUrl in helper options")
         //@ts-ignore
-        this.entity[fieldName] = `${this.options.fileBaseUrl}/${saveFile(value, this.options.fileSavePath)}`
+        this.entity[fieldName] = saveFile(value, `${suffix.toLowerCase()}`)
     }
-    async updateRelationById(field: string, value: any) {
-        let fieldName = field.substr(0, field.length - 3)
-        //update to One relation
-        await createQueryBuilder()
-            .relation(this.EntityClass, fieldName)
-            .of(this.entity)
-            .set(value)
-    }
-    async updateRelationByIdCascade(field: string, value: any) {
-        let fieldName = field.substr(0, field.length - 3)
-        let relation = this.relations[fieldName]
-        //@ts-ignore
-        let newRelatedEntity = new relation.type()
-        newRelatedEntity.id = value
-        //update to One relation
-        this.setEntityRelationValue(fieldName, newRelatedEntity)
-    }
+
     async updateRelatedEntitiesByIds(field: string, ids: []) {
         let fieldName = field.substr(0, field.length - 4)
         //update relation
@@ -186,7 +163,7 @@ export class EntityUpdateHelper<ORM> {
     }
     async updateRelatedEntitiesByIdsCascade(field: string, ids: []) {
         let fieldName = field.substr(0, field.length - 4)
-        let relation = this.relations[fieldName]
+        let relation = this.getRelation(fieldName)
         //update to One relation
         this.setEntityRelationValue(
             fieldName,
@@ -223,13 +200,17 @@ export class EntityUpdateHelper<ORM> {
         //add new one
         for (let entity of value) {
             if (!currentIds.includes(entity.id)) {
-                relatedEntities.push(entity)
+                let relation = this.getRelation(field)
+                //@ts-ignore
+                let newRelatedEntity = new relation.type()
+                await EntityUpdateHelper.update(newRelatedEntity, entity)
+                relatedEntities.push(newRelatedEntity)
             }
         }
         this.setEntityRelationValue(field, relatedEntities)
     }
     async updateRelationsEntities(field: string, value: any[]) {
-        let relation = this.relations[field]
+        let relation = this.getRelation(field)
         let relatedEntities = await createQueryBuilder()
             .relation(this.EntityClass, field)
             .of(this.entity)
@@ -282,7 +263,7 @@ export class EntityUpdateHelper<ORM> {
         }
     }
     async updateRelatedEntity(field: string, value: any) {
-        let relation = this.relations[field]
+        let relation = this.getRelation(field)
         let relatedEntity = await createQueryBuilder()
             .relation(this.EntityClass, field)
             .of(this.entity)
@@ -332,5 +313,13 @@ export class EntityUpdateHelper<ORM> {
             return f.substr(0, f.length - 4)
         }
         return f
+    }
+    getRelation(fieldName: string) {
+        if (this.relations[fieldName]) {
+            return this.relations[fieldName]
+        }
+        throw new Error(
+            `Unable to find relation for ${fieldName} in ${this.metadata.name}`,
+        )
     }
 }
