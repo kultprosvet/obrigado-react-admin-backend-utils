@@ -3,8 +3,12 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./backend-helper/BaseAdminResourceResolver"));
-__export(require("./backend-helper/EntityUpdateHelper"));
-var GQLFileInput_1 = require("./backend-helper/types/GQLFileInput");
+__export(require("./BaseAdminResourceResolver"));
+__export(require("./EntityUpdateHelper"));
+var GQLFileInput_1 = require("./types/GQLFileInput");
 exports.GQLFileInput = GQLFileInput_1.GQLFileInput;
+__export(require("./resolvers/AdminAuthResolver"));
+__export(require("./utils/AuthChecker"));
+__export(require("./utils/getAdministratorData"));
+__export(require("./utils/getJWTToken"));
 //# sourceMappingURL=index.js.map

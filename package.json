@@ -3,7 +3,7 @@
   "version": "1.0.6",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",
-  "types" : "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc"
   },
@@ -24,15 +24,24 @@
   "homepage": "https://github.com/kultprosvet/react-admin-helper#readme",
   "dependencies": {
     "apollo-server-errors": "^2.3.1",
-    "type-graphql": "^0.17.4",
-    "typeorm": "^0.2.18",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "bcrypt": "^3.0.6",
+    "jsonwebtoken": "^8.5.0"
+  },
+  "peerDependencies": {
+    "type-graphql": "latest",
+    "typeorm": "latest"
   },
   "devDependencies": {
-    "typescript": "^3.5.3",
-    "tslint": "5.18.0",
+    "@types/bcrypt": "^3.0.0",
+    "@types/jsonwebtoken": "^8.3.3",
+    "@types/node": "^12.7.2",
     "prettier": "^1.18.2",
+    "tslint": "5.18.0",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1"
+    "tslint-plugin-prettier": "^2.0.1",
+    "type-graphql": "latest",
+    "typeorm": "latest",
+    "typescript": "^3.5.3"
   }
 }
