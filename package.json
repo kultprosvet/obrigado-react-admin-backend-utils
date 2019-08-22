@@ -1,5 +1,5 @@
 {
-  "name": "obrigado-react-admin-server",
+  "name": "obrigado-react-admin-backend-helpers",
   "version": "1.0.6",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",
@@ -29,8 +29,8 @@
     "jsonwebtoken": "^8.5.0"
   },
   "peerDependencies": {
-    "type-graphql": "latest",
-    "typeorm": "latest"
+    "type-graphql": "0.17.x",
+    "typeorm": "0.2.x"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
