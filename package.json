@@ -1,6 +1,6 @@
 {
   "name": "obrigado-react-admin-backend-helpers",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,9 +24,9 @@
   "homepage": "https://github.com/kultprosvet/react-admin-helper#readme",
   "dependencies": {
     "apollo-server-errors": "^2.3.1",
-    "uuid": "^3.3.2",
     "bcrypt": "^3.0.6",
-    "jsonwebtoken": "^8.5.0"
+    "jsonwebtoken": "^8.5.0",
+    "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "type-graphql": "0.17.x",
