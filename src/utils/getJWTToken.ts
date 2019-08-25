@@ -16,8 +16,6 @@ export function getJWTToken(data: Object, expireDays = 360): string {
         },
         secret,{
             expiresIn:`${expireDays} days`,
-            noTimestamp: false,
-            notBefore: '2s'
         }
     )
 }

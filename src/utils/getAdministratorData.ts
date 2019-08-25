@@ -36,6 +36,7 @@ export const getAdministratorData = (req: any) => {
         }
         return {administrator:user}
     } catch (e) {
-        return null
+        console.log('admin auth error',e)
+        return {administrator:null}
     }
 }

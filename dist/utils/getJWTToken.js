@@ -11,8 +11,6 @@ function getJWTToken(data, expireDays = 360) {
         data,
     }, secret, {
         expiresIn: `${expireDays} days`,
-        noTimestamp: false,
-        notBefore: '2s'
     });
 }
 exports.getJWTToken = getJWTToken;

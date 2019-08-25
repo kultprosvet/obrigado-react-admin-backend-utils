@@ -29,7 +29,8 @@ exports.getAdministratorData = (req) => {
         return { administrator: user };
     }
     catch (e) {
-        return null;
+        console.log('admin auth error', e);
+        return { administrator: null };
     }
 };
 //# sourceMappingURL=getAdministratorData.js.map
