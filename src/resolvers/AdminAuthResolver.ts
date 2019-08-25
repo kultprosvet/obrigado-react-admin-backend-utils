@@ -5,7 +5,8 @@ import {ApolloError} from "apollo-server-errors";
 import {getJWTToken} from "..";
 import * as bcrypt from 'bcrypt'
 import {GQLLogoutResult} from "../types/GQLLogoutResult";
-import moment from "moment";
+import * as moment from "moment";
+
 export class AdminAuthResolver{
     @Mutation(type=>GQLAdministrator)
     async adminLogin(@Arg('username') username:string,@Arg('password') password:string,@Ctx() ctx:any){

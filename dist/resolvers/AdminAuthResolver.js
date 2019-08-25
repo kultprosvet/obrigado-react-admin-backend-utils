@@ -19,7 +19,7 @@ const apollo_server_errors_1 = require("apollo-server-errors");
 const __1 = require("..");
 const bcrypt = require("bcrypt");
 const GQLLogoutResult_1 = require("../types/GQLLogoutResult");
-const moment_1 = require("moment");
+const moment = require("moment");
 class AdminAuthResolver {
     async adminLogin(username, password, ctx) {
         const user = await Administrator_1.Administrator.findOne({ where: { username } });
@@ -37,7 +37,7 @@ class AdminAuthResolver {
         user.token = __1.getJWTToken({ id: user.id, type: 'admin' }, expire);
         ctx.session.res.cookie('admin_token', user.token, {
             httpOnly: true,
-            expires: moment_1.default()
+            expires: moment()
                 .add(expire, 'day')
                 .toDate(),
         });
