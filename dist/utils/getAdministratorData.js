@@ -16,6 +16,9 @@ exports.getAdministratorData = (req) => {
             if (jwt.verify(token, secret)) {
                 const data = jwt.decode(token);
                 user = data.data;
+                if (user.type !== 'admin') {
+                    user = null;
+                }
             }
         }
         return { administrator: user };

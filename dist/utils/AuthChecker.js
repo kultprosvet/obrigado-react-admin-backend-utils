@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authChecker = ({ root, args, context, info }, roles) => {
+exports.authCheckerAdmin = ({ root, args, context, info }, roles) => {
     if (roles.includes('admin'))
         return false;
     if (!context.administrator)

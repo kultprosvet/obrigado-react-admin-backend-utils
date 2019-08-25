@@ -1,6 +1,6 @@
 import { AuthChecker } from 'type-graphql'
 
-export const authChecker: AuthChecker<any> = (
+export const authCheckerAdmin: AuthChecker<any> = (
     { root, args, context, info },
     roles
 ) => {
