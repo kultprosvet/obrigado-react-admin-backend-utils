@@ -4,28 +4,28 @@ import {GQLReactAdminGetManyReferenceParams} from "./GQLReactAdminGetManyReferen
 import {SelectQueryBuilder} from "typeorm";
 
 export  abstract class ReactAdminDataProvider {
-    abstract getList(
+     async getList(
         params: GQLReactAdminListParams,
-    ): any
+    ): Promise<any> {return  null}
 
-    abstract async getOne(id: string): Promise<any>
+     async getOne(id: string): Promise<any>{return  null}
 
-    abstract async getMany(ids: number[]): Promise<any>
+     async getMany(ids: number[]): Promise<any>{return  null}
 
-    abstract async getManyReference(params: GQLReactAdminGetManyReferenceParams): Promise<any>
+     async getManyReference(params: GQLReactAdminGetManyReferenceParams): Promise<any>{return  null}
 
-    abstract async update(id: number, data: any): Promise<any>
+     async update(id: number, data: any): Promise<any>{return  null}
 
-    abstract async updateMany(ids: number[], data: any): Promise<any>
+     async updateMany(ids: number[], data: any): Promise<any>{return  null}
 
-    abstract async create(data: any): Promise<any>
+     async create(data: any): Promise<any>{return  null}
 
-    abstract async delete(id: number): Promise<any>
+     async delete(id: number): Promise<any>{return  null}
 
-    abstract async deleteMany(ids: number[]): Promise<any>
+     async deleteMany(ids: number[]): Promise<any>{return  null}
 
-    abstract alterGetListQuery(
+     alterGetListQuery(
         qb: SelectQueryBuilder<any>,
         params: GQLReactAdminListParams,
-    ): void
+    ): void{return  }
 }

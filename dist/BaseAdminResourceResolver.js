@@ -19,6 +19,7 @@ const EntityUpdateHelper_1 = require("./EntityUpdateHelper");
 const GQLReactAdminListParams_1 = require("./types/GQLReactAdminListParams");
 const GQLReactAdminGetManyReferenceParams_1 = require("./types/GQLReactAdminGetManyReferenceParams");
 const IdsList_1 = require("./types/IdsList");
+const ReactAdminDataProvider_1 = require("./types/ReactAdminDataProvider");
 function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHelperOptions) {
     //@ts-ignore
     const suffix = ORMEntity.name;
@@ -36,7 +37,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
     OutList = __decorate([
         type_graphql_1.ObjectType(`${suffix}List`)
     ], OutList);
-    let BaseResolver = class BaseResolver {
+    let BaseResolver = class BaseResolver extends ReactAdminDataProvider_1.ReactAdminDataProvider {
         // GET LIST
         async getList(params) {
             //@ts-ignore

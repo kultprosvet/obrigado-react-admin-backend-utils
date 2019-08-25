@@ -44,7 +44,7 @@ export function createBaseCrudResolver<
     }
 
     @Resolver({ isAbstract: true })
-    abstract class BaseResolver {
+    abstract class BaseResolver extends ReactAdminDataProvider{
         @Authorized('admin')
         @Query(type => OutList, {
             name: `admin${suffix}List`,
