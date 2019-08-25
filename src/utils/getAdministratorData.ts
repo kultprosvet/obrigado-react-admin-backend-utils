@@ -7,12 +7,16 @@ type TokenInfo = {
 }
 export const getAdministratorData = (req: any) => {
     try {
-        const authorization = req.headers.authorization
         let user: { [key: string]: any } | null
         user = null
-        if (authorization) {
-            const token = authorization.replace('Bearer ', '')
+        let token=null
+        if (req.headers.authorization) {
+            token = req.headers.authorization.replace('Bearer ', '')
+        } else if (req.cookies.admin_token) {
+            token = req.cookies.token
+        }
 
+        if (token) {
             const secret = process.env.APP_SECRET
 
             if (!secret) {
@@ -29,10 +33,7 @@ export const getAdministratorData = (req: any) => {
                     user=null
                 }
             }
-
         }
-
-
         return {administrator:user}
     } catch (e) {
         return null
