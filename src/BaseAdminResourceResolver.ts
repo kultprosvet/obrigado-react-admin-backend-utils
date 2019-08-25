@@ -31,7 +31,7 @@ export function createBaseCrudResolver<
     T extends ClassType,
     T2 extends ClassType,
     O extends ClassType<BaseEntity>,
->(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):typeof ReactAdminDataProvider {
+>(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):any {
     //@ts-ignore
     const suffix = ORMEntity.name
     let entityAlias = suffix.toLowerCase()
