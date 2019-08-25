@@ -13,7 +13,7 @@ export const getAdministratorData = (req: any) => {
         if (req.headers.authorization) {
             token = req.headers.authorization.replace('Bearer ', '')
         } else if (req.cookies.admin_token) {
-            token = req.cookies.token
+            token = req.cookies.admin_token
         }
 
         if (token) {
