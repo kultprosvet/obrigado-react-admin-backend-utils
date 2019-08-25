@@ -35,6 +35,11 @@ class AdminAuthResolver {
         user.token = getJWTToken_1.getJWTToken({ id: user.id, type: 'admin' }, expire);
         return user;
     }
+    async adminCheck(context) {
+        if (!context.administrator)
+            throw new apollo_server_errors_1.ApolloError('Admin not authorized');
+        return context.administrator;
+    }
 }
 __decorate([
     type_graphql_1.Mutation(type => GQLAdministrator_1.GQLAdministrator),
@@ -43,5 +48,12 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], AdminAuthResolver.prototype, "adminLogin", null);
+__decorate([
+    type_graphql_1.Query(type => GQLAdministrator_1.GQLAdministrator),
+    __param(0, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AdminAuthResolver.prototype, "adminCheck", null);
 exports.AdminAuthResolver = AdminAuthResolver;
 //# sourceMappingURL=AdminAuthResolver.js.map

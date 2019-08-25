@@ -1,4 +1,4 @@
-import {Arg, Mutation} from "type-graphql";
+import {Arg, Ctx, Mutation, Query} from "type-graphql";
 import {GQLAdministrator} from "../types/GQLAdministrator";
 import {Administrator} from "../models/Administrator";
 import {ApolloError} from "apollo-server-errors";
@@ -29,4 +29,11 @@ export class AdminAuthResolver{
 
         return user
     }
+    @Query(type=>GQLAdministrator)
+    async adminCheck(@Ctx() context:any){
+        if (!context.administrator) throw new ApolloError('Admin not authorized')
+        return context.administrator
+
+    }
+
 }
