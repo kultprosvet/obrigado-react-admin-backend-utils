@@ -4,11 +4,16 @@ const apollo_server_errors_1 = require("apollo-server-errors");
 const jwt = require("jsonwebtoken");
 exports.getAdministratorData = (req) => {
     try {
-        const authorization = req.headers.authorization;
         let user;
         user = null;
-        if (authorization) {
-            const token = authorization.replace('Bearer ', '');
+        let token = null;
+        if (req.headers.authorization) {
+            token = req.headers.authorization.replace('Bearer ', '');
+        }
+        else if (req.cookies.admin_token) {
+            token = req.cookies.token;
+        }
+        if (token) {
             const secret = process.env.APP_SECRET;
             if (!secret) {
                 throw new apollo_server_errors_1.ApolloError('Secret is not provided, please provide set env `APP_SECRET`');

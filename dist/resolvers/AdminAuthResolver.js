@@ -16,15 +16,17 @@ const type_graphql_1 = require("type-graphql");
 const GQLAdministrator_1 = require("../types/GQLAdministrator");
 const Administrator_1 = require("../models/Administrator");
 const apollo_server_errors_1 = require("apollo-server-errors");
-const getJWTToken_1 = require("../utils/getJWTToken");
-const bcrypt_1 = require("bcrypt");
+const __1 = require("..");
+const bcrypt = require("bcrypt");
+const GQLLogoutResult_1 = require("../types/GQLLogoutResult");
+const moment_1 = require("moment");
 class AdminAuthResolver {
-    async adminLogin(username, password) {
+    async adminLogin(username, password, ctx) {
         const user = await Administrator_1.Administrator.findOne({ where: { username } });
         if (user == null) {
             throw new apollo_server_errors_1.ApolloError('Wrong email or password', 'WRONG_CREDENTIALS');
         }
-        if (!bcrypt_1.default.compareSync(password, user.password)) {
+        if (!bcrypt.compareSync(password, user.password)) {
             throw new apollo_server_errors_1.ApolloError('Wrong email or password', 'WRONG_CREDENTIALS');
         }
         let secret = process.env['APP_SECRET'];
@@ -32,7 +34,13 @@ class AdminAuthResolver {
             throw new apollo_server_errors_1.ApolloError('Please set env APP_SECRET');
         }
         let expire = parseInt(process.env.ADMINISTRATOR_SESSION_EXPIRE || '365');
-        user.token = getJWTToken_1.getJWTToken({ id: user.id, type: 'admin' }, expire);
+        user.token = __1.getJWTToken({ id: user.id, type: 'admin' }, expire);
+        ctx.session.res.cookie('admin_token', user.token, {
+            httpOnly: true,
+            expires: moment_1.default()
+                .add(expire, 'day')
+                .toDate(),
+        });
         return user;
     }
     async adminCheck(context) {
@@ -40,12 +48,19 @@ class AdminAuthResolver {
             throw new apollo_server_errors_1.ApolloError('Admin not authorized');
         return context.administrator;
     }
+    async adminLogOut(ctx) {
+        ctx.session.res.clearCookie('admin_token');
+        return {
+            message: 'Logout success',
+            code: 'SUCCESS',
+        };
+    }
 }
 __decorate([
     type_graphql_1.Mutation(type => GQLAdministrator_1.GQLAdministrator),
-    __param(0, type_graphql_1.Arg('username')), __param(1, type_graphql_1.Arg('password')),
+    __param(0, type_graphql_1.Arg('username')), __param(1, type_graphql_1.Arg('password')), __param(2, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], AdminAuthResolver.prototype, "adminLogin", null);
 __decorate([
@@ -55,5 +70,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AdminAuthResolver.prototype, "adminCheck", null);
+__decorate([
+    type_graphql_1.Mutation(type => GQLLogoutResult_1.GQLLogoutResult),
+    __param(0, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AdminAuthResolver.prototype, "adminLogOut", null);
 exports.AdminAuthResolver = AdminAuthResolver;
 //# sourceMappingURL=AdminAuthResolver.js.map
