@@ -1,6 +1,6 @@
 {
   "name": "obrigado-react-admin-backend-helpers",
-  "version": "1.0.17",
+  "version": "1.0.23",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

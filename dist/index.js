@@ -8,7 +8,7 @@ __export(require("./EntityUpdateHelper"));
 var GQLFileInput_1 = require("./types/GQLFileInput");
 exports.GQLFileInput = GQLFileInput_1.GQLFileInput;
 __export(require("./resolvers/AdminAuthResolver"));
-__export(require("./utils/AuthChecker"));
+__export(require("./utils/authCheckerAdmin"));
 __export(require("./utils/getAdministratorData"));
 __export(require("./utils/getJWTToken"));
 //# sourceMappingURL=index.js.map
