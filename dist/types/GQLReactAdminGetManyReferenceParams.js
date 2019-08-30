@@ -35,6 +35,10 @@ __decorate([
     type_graphql_1.Field(type => [GQLReactAdminFilterParam_1.GQLReactAdminFilterParam], { nullable: true }),
     __metadata("design:type", GQLReactAdminFilterParam_1.GQLReactAdminFilterParam)
 ], GQLReactAdminGetManyReferenceParams.prototype, "filter", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], GQLReactAdminGetManyReferenceParams.prototype, "source", void 0);
 GQLReactAdminGetManyReferenceParams = __decorate([
     type_graphql_1.InputType('ReactAdminGetManyReferenceParams')
 ], GQLReactAdminGetManyReferenceParams);

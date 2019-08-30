@@ -15,4 +15,6 @@ export class GQLReactAdminGetManyReferenceParams {
     sort: GQLReactAdminSort
     @Field(type => [GQLReactAdminFilterParam], { nullable: true })
     filter: GQLReactAdminFilterParam
+    @Field()
+    source: string
 }

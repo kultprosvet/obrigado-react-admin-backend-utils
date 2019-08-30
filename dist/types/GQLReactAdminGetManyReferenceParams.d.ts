@@ -7,4 +7,5 @@ export declare class GQLReactAdminGetManyReferenceParams {
     pagination: GQLReactAdminPagination;
     sort: GQLReactAdminSort;
     filter: GQLReactAdminFilterParam;
+    source: string;
 }
