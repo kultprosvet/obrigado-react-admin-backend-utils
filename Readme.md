@@ -1,9 +1,13 @@
 # Installation
 Set of helpers for React Admin
 Install package:\
-*npm install git@github.com:kultprosvet/obrigado-react-admin-backend-utils.git*\
-or\
-*yarn add obrigado-react-admin-backend-helpers*\n
+```
+npm install git@github.com:kultprosvet/obrigado-react-admin-backend-utils.git\
+```
+or
+```
+yarn add obrigado-react-admin-backend-helpers\n
+```
 # Authorization setup
 If want to use default auth 
 1. Configure typeorm:\
