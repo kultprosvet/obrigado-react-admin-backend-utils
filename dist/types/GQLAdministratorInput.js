@@ -13,7 +13,7 @@ const type_graphql_1 = require("type-graphql");
 let GQLAdministratorInput = class GQLAdministratorInput {
 };
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], GQLAdministratorInput.prototype, "username", void 0);
 __decorate([
@@ -24,6 +24,10 @@ __decorate([
     type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], GQLAdministratorInput.prototype, "first_name", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], GQLAdministratorInput.prototype, "password", void 0);
 GQLAdministratorInput = __decorate([
     type_graphql_1.InputType('AdministratorInput')
 ], GQLAdministratorInput);
