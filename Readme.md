@@ -32,6 +32,7 @@ example:
 ```javascript
 import {
     AdminAuthResolver,
+    AdminDataResolver,
     getAdministratorData,
 } from 'obrigado-react-admin-backend-utils'
 ...
@@ -39,7 +40,7 @@ import {
         resolvers: [
             __dirname + '/graphql/resolvers/*.ts',
             __dirname + '/graphql/resolvers/admin/*.ts',
-            AdminAuthResolver, //  <---
+            AdminAuthResolver,AdminDataResolver //  <---
         ],
         authChecker,
     })

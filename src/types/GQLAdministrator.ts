@@ -10,6 +10,6 @@ export class GQLAdministrator {
     last_name:string
     @Field({nullable:true})
     first_name:string
-    @Field()
+    @Field({nullable:true})
     token:string
 }
