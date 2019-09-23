@@ -39,7 +39,7 @@ export class AdminDataResolver extends AdminDataBaseResolver {
     @Mutation(type => GQLAdministrator, { name: `adminAdministratorCreate` })
     async create(@Arg('data', type => GQLAdministratorInput) data: GQLAdministratorInput) {
         // @ts-ignore
-        let entity = ORMEntity.create()
+        let entity = Administrator.create()
         await EntityUpdateHelper.update(entity, data,{ignore:['password']})
         if (data.password)
             entity.password=bcrypt.hashSync(data.password,10)
