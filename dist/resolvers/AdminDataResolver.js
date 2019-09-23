@@ -35,7 +35,7 @@ let AdminDataResolver = class AdminDataResolver extends AdminDataBaseResolver {
     }
     async create(data) {
         // @ts-ignore
-        let entity = Administrator_1.Administrator.create();
+        let entity = new Administrator_1.Administrator();
         await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, { ignore: ['password'] });
         if (data.password)
             entity.password = bcrypt.hashSync(data.password, 10);
