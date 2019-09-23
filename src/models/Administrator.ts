@@ -1,7 +1,8 @@
-import {BaseEntity, Column, Entity, Index, PrimaryColumn} from "typeorm";
+import {BaseEntity, Column, Entity, Index,  PrimaryGeneratedColumn} from "typeorm";
 @Entity('administrators')
+@Index(["username","first_name","last_name"], { fulltext: true })
 export class Administrator extends BaseEntity{
-   @PrimaryColumn({unsigned:true})
+   @PrimaryGeneratedColumn ({unsigned:true})
     id:number
     @Column()
     password:string
