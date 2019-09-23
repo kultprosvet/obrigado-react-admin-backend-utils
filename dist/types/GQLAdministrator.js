@@ -29,7 +29,7 @@ __decorate([
     __metadata("design:type", String)
 ], GQLAdministrator.prototype, "first_name", void 0);
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], GQLAdministrator.prototype, "token", void 0);
 GQLAdministrator = __decorate([
