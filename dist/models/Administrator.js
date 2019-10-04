@@ -13,7 +13,7 @@ const typeorm_1 = require("typeorm");
 let Administrator = class Administrator extends typeorm_1.BaseEntity {
 };
 __decorate([
-    typeorm_1.PrimaryGeneratedColumn({ unsigned: true }),
+    typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
 ], Administrator.prototype, "id", void 0);
 __decorate([
@@ -22,7 +22,7 @@ __decorate([
 ], Administrator.prototype, "password", void 0);
 __decorate([
     typeorm_1.Column(),
-    typeorm_1.Index({ unique: true }),
+    typeorm_1.Index('IDX_QUESTION_USERNAME', { unique: true }),
     __metadata("design:type", String)
 ], Administrator.prototype, "username", void 0);
 __decorate([
@@ -35,7 +35,7 @@ __decorate([
 ], Administrator.prototype, "last_name", void 0);
 Administrator = __decorate([
     typeorm_1.Entity('administrators'),
-    typeorm_1.Index(["username", "first_name", "last_name"], { fulltext: true })
+    typeorm_1.Index('IDX_FULL_TEXT', ["username", "first_name", "last_name"], { fulltext: true })
 ], Administrator);
 exports.Administrator = Administrator;
 //# sourceMappingURL=Administrator.js.map

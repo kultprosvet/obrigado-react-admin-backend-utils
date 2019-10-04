@@ -1,13 +1,13 @@
 import {BaseEntity, Column, Entity, Index,  PrimaryGeneratedColumn} from "typeorm";
 @Entity('administrators')
-@Index(["username","first_name","last_name"], { fulltext: true })
+@Index('IDX_FULL_TEXT',["username","first_name","last_name"], { fulltext: true })
 export class Administrator extends BaseEntity{
-   @PrimaryGeneratedColumn ({unsigned:true})
+    @PrimaryGeneratedColumn ()
     id:number
     @Column()
     password:string
     @Column()
-    @Index({unique:true})
+    @Index('IDX_QUESTION_USERNAME',{unique:true})
     username:string
     @Column({nullable:true})
     first_name:string
