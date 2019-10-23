@@ -12,7 +12,13 @@ export const getAdministratorData = (req: any) => {
         let user: { [key: string]: any } | null
         user = null
         let token=null
-        const cookies = cookie.parse(req.headers.cookie || '');
+        let cookies:any={}
+        if ((typeof req.headers.cookie)==='string'){
+             cookies= cookie.parse(req.headers.cookie || '');
+        }else{
+            cookies=req.headers.cookie
+        }
+
         if (req.headers.authorization) {
             token = req.headers.authorization.replace('Bearer ', '')
         } else if (cookies.admin_token) {

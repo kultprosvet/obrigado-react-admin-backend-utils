@@ -9,7 +9,13 @@ exports.getAdministratorData = (req) => {
         let user;
         user = null;
         let token = null;
-        const cookies = cookie.parse(req.headers.cookie || '');
+        let cookies = {};
+        if ((typeof req.headers.cookie) === 'string') {
+            cookies = cookie.parse(req.headers.cookie || '');
+        }
+        else {
+            cookies = req.headers.cookie;
+        }
         if (req.headers.authorization) {
             token = req.headers.authorization.replace('Bearer ', '');
         }
