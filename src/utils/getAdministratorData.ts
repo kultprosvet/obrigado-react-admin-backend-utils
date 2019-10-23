@@ -1,6 +1,8 @@
 import { ApolloError } from 'apollo-server-errors'
 import * as jwt from 'jsonwebtoken'
+import cookie = require('cookie');
 
+'cookie'
 type TokenInfo = {
     id: string
     type: string
@@ -10,10 +12,11 @@ export const getAdministratorData = (req: any) => {
         let user: { [key: string]: any } | null
         user = null
         let token=null
+        const cookies = cookie.parse(req.headers.cookie || '');
         if (req.headers.authorization) {
             token = req.headers.authorization.replace('Bearer ', '')
-        } else if (req.cookies.admin_token) {
-            token = req.cookies.admin_token
+        } else if (cookies.admin_token) {
+            token = cookies.admin_token
         }
 
         if (token) {

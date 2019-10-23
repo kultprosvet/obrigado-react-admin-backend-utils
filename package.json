@@ -1,6 +1,6 @@
 {
   "name": "obrigado-react-admin-backend-utils",
-  "version": "1.0.27",
+  "version": "1.0.31",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,6 +25,7 @@
   "dependencies": {
     "apollo-server-errors": "^2.3.1",
     "bcrypt": "^3.0.6",
+    "cookie": "^0.4.0",
     "jsonwebtoken": "^8.5.0",
     "moment": "^2.24.0",
     "uuid": "^3.3.2"
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
+    "@types/cookie": "^0.3.3",
     "@types/jsonwebtoken": "^8.3.3",
     "@types/node": "^12.7.2",
     "prettier": "^1.18.2",
