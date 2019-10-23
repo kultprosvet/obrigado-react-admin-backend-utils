@@ -46,10 +46,13 @@ import {
     })
      const server = new ApolloServer({
         schema: schema,
+        cors: {
+            credentials: true,
+            origin: function(origin, callback) {
+                callback(null, true)
+            },
+        },
         context: async (session: any) => {
-            console.log('ADM', {
-                ...getAdministratorData(session.req),
-            })
             return {
                 session,
                 user: getUserInfo(session.req),
