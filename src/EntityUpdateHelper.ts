@@ -11,9 +11,9 @@ import { isObject } from './utils/isObject'
 import { ApolloError } from 'apollo-server-errors'
 import {GQLFileInput} from "./types/GQLFileInput";
 export type EntityUpdateHelperOptions={
-    ignore: Array<string>
-    fileSavePath:string|null
-    fileBaseUrl:string|null
+    ignore: Array<string>,
+    fileSavePath:string|null,
+    fileBaseUrl:string|null,
 }
 export class EntityUpdateHelper<ORM> {
     EntityClass: any
@@ -29,7 +29,7 @@ export class EntityUpdateHelper<ORM> {
         data: any,
         options?:Partial<EntityUpdateHelperOptions>,
     ): Promise<void> {
-        const defaultOptions={ ignore: []  ,fileSavePath:null,fileBaseUrl:null }
+        const defaultOptions={ ignore: []  ,fileSavePath:null,fileBaseUrl:null}
         let helper = new EntityUpdateHelper()
         helper.entity = entity
         helper.EntityClass = entity.constructor

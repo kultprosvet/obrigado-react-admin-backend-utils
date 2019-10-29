@@ -33,6 +33,11 @@ export function createBaseCrudResolver<
     O extends ClassType<BaseEntity>,
 >(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):any {
     //@ts-ignore
+    const metadata = ORMEntity.getRepository()
+        .metadata as EntityMetadata
+    const primaryKey=metadata.primaryColumns[0].databaseName
+
+    //@ts-ignore
     const suffix = ORMEntity.name
     let entityAlias = suffix.toLowerCase()
     @ObjectType(`${suffix}List`)
@@ -90,8 +95,10 @@ export function createBaseCrudResolver<
             @Arg('id')
             id: string,
         ) {
+            let where:ObjectLiteral={}
+            where[primaryKey]=id
             // @ts-ignore
-            return await ORMEntity.findOne({ where: { id } })
+            return await ORMEntity.findOne({ where })
         }
         // GET_MANY
         @Authorized('admin')
@@ -103,8 +110,10 @@ export function createBaseCrudResolver<
             @Arg('ids', type => [Int])
             ids: number[],
         ) {
+            let where:ObjectLiteral={}
+            where[primaryKey]=In(ids)
             // @ts-ignore
-            return await ORMEntity.find({ id: In(ids) })
+            return await ORMEntity.find({where})
         }
         // GET_MANY_REFERENCE
         @Authorized('admin')
@@ -116,9 +125,11 @@ export function createBaseCrudResolver<
             @Arg('params', type => GQLReactAdminGetManyReferenceParams)
             params: GQLReactAdminGetManyReferenceParams,
         ) {
+            let where:ObjectLiteral={}
+            where[primaryKey]=params.id
             let query = createQueryBuilder(ORMEntity, 'entity').where(
-                `entity.${params.target}=:id`,
-                { id: params.id },
+                `entity.${params.target}=:${primaryKey}`,
+                where,
             )
             let total = await query.getCount()
             if (params.pagination) {
@@ -145,8 +156,10 @@ export function createBaseCrudResolver<
             @Arg('data', type => inputTypeCls)
             data: T2,
         ) {
+            let where:ObjectLiteral={}
+            where[primaryKey]=id
             // @ts-ignore
-            let entity = await ORMEntity.findOne({ where: { id } })
+            let entity = await ORMEntity.findOne({ where })
             if (!entity)
                 throw new ApolloError(
                     'Entity not found for id ' + id,
@@ -193,7 +206,7 @@ export function createBaseCrudResolver<
             id: number,
         ) {
             // @ts-ignore
-            let entity = await validateEntityRelations(ORMEntity, id)
+            let entity = await validateEntityRelations(ORMEntity, id,primaryKey)
             await entity.remove()
             return entity
         }
@@ -209,7 +222,7 @@ export function createBaseCrudResolver<
             for (let id of ids) {
                 try {
                     // @ts-ignore
-                    let entity = await validateEntityRelations(ORMEntity, id)
+                    let entity = await validateEntityRelations(ORMEntity, id,primaryKey)
                     await entity.remove()
                     removedIds.push(id)
                 } catch (e) {
@@ -271,11 +284,12 @@ export function createBaseCrudResolver<
 export async function validateEntityRelations<ORM extends BaseEntity>(
     entityClass: any,
     id: number,
+    primaryKey:string
 ): Promise<ORM> {
     const metadata = entityClass.getRepository().metadata
     let errors = []
     let rQuery = await createQueryBuilder(entityClass, 'entity').where(
-        'entity.id=:id',
+        `entity.${primaryKey}=:id`,
         { id },
     )
     for (let r of metadata.relations) {

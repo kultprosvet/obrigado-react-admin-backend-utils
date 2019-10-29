@@ -22,6 +22,10 @@ const IdsList_1 = require("./types/IdsList");
 const ReactAdminDataProvider_1 = require("./types/ReactAdminDataProvider");
 function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHelperOptions) {
     //@ts-ignore
+    const metadata = ORMEntity.getRepository()
+        .metadata;
+    const primaryKey = metadata.primaryColumns[0].databaseName;
+    //@ts-ignore
     const suffix = ORMEntity.name;
     let entityAlias = suffix.toLowerCase();
     let OutList = class OutList {
@@ -66,17 +70,23 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         }
         // GET ONE
         async getOne(id) {
+            let where = {};
+            where[primaryKey] = id;
             // @ts-ignore
-            return await ORMEntity.findOne({ where: { id } });
+            return await ORMEntity.findOne({ where });
         }
         // GET_MANY
         async getMany(ids) {
+            let where = {};
+            where[primaryKey] = typeorm_1.In(ids);
             // @ts-ignore
-            return await ORMEntity.find({ id: typeorm_1.In(ids) });
+            return await ORMEntity.find({ where });
         }
         // GET_MANY_REFERENCE
         async getManyReference(params) {
-            let query = typeorm_1.createQueryBuilder(ORMEntity, 'entity').where(`entity.${params.target}=:id`, { id: params.id });
+            let where = {};
+            where[primaryKey] = params.id;
+            let query = typeorm_1.createQueryBuilder(ORMEntity, 'entity').where(`entity.${params.target}=:${primaryKey}`, where);
             let total = await query.getCount();
             if (params.pagination) {
                 query
@@ -92,8 +102,10 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         }
         // UPDATE
         async update(id, data) {
+            let where = {};
+            where[primaryKey] = id;
             // @ts-ignore
-            let entity = await ORMEntity.findOne({ where: { id } });
+            let entity = await ORMEntity.findOne({ where });
             if (!entity)
                 throw new apollo_server_errors_1.ApolloError('Entity not found for id ' + id, 'NOT_FOUND');
             await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, updateHelperOptions);
@@ -122,7 +134,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         // DELETE
         async delete(id) {
             // @ts-ignore
-            let entity = await validateEntityRelations(ORMEntity, id);
+            let entity = await validateEntityRelations(ORMEntity, id, primaryKey);
             await entity.remove();
             return entity;
         }
@@ -133,7 +145,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             for (let id of ids) {
                 try {
                     // @ts-ignore
-                    let entity = await validateEntityRelations(ORMEntity, id);
+                    let entity = await validateEntityRelations(ORMEntity, id, primaryKey);
                     await entity.remove();
                     removedIds.push(id);
                 }
@@ -261,10 +273,10 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
     return BaseResolver;
 }
 exports.createBaseCrudResolver = createBaseCrudResolver;
-async function validateEntityRelations(entityClass, id) {
+async function validateEntityRelations(entityClass, id, primaryKey) {
     const metadata = entityClass.getRepository().metadata;
     let errors = [];
-    let rQuery = await typeorm_1.createQueryBuilder(entityClass, 'entity').where('entity.id=:id', { id });
+    let rQuery = await typeorm_1.createQueryBuilder(entityClass, 'entity').where(`entity.${primaryKey}=:id`, { id });
     for (let r of metadata.relations) {
         if (r.onDelete !== 'CASCADE' &&
             !r.cascade &&
