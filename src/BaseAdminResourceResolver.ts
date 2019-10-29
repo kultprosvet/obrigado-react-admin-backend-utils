@@ -32,10 +32,6 @@ export function createBaseCrudResolver<
     T2 extends ClassType,
     O extends ClassType<BaseEntity>,
 >(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):any {
-    //@ts-ignore
-    const metadata = ORMEntity.getRepository()
-        .metadata as EntityMetadata
-    const primaryKey=metadata.primaryColumns[0].databaseName
 
     //@ts-ignore
     const suffix = ORMEntity.name
@@ -96,7 +92,7 @@ export function createBaseCrudResolver<
             id: string,
         ) {
             let where:ObjectLiteral={}
-            where[primaryKey]=id
+            where[this.primaryKey]=id
             // @ts-ignore
             return await ORMEntity.findOne({ where })
         }
@@ -111,7 +107,7 @@ export function createBaseCrudResolver<
             ids: number[],
         ) {
             let where:ObjectLiteral={}
-            where[primaryKey]=In(ids)
+            where[this.primaryKey]=In(ids)
             // @ts-ignore
             return await ORMEntity.find({where})
         }
@@ -126,9 +122,9 @@ export function createBaseCrudResolver<
             params: GQLReactAdminGetManyReferenceParams,
         ) {
             let where:ObjectLiteral={}
-            where[primaryKey]=params.id
+            where[this.primaryKey]=params.id
             let query = createQueryBuilder(ORMEntity, 'entity').where(
-                `entity.${params.target}=:${primaryKey}`,
+                `entity.${params.target}=:${this.primaryKey}`,
                 where,
             )
             let total = await query.getCount()
@@ -157,7 +153,7 @@ export function createBaseCrudResolver<
             data: T2,
         ) {
             let where:ObjectLiteral={}
-            where[primaryKey]=id
+            where[this.primaryKey]=id
             // @ts-ignore
             let entity = await ORMEntity.findOne({ where })
             if (!entity)
@@ -275,6 +271,12 @@ export function createBaseCrudResolver<
                     }
                 }
             }
+        }
+        get primaryKey(){
+            //@ts-ignore
+            const metadata = ORMEntity.getRepository()
+                .metadata as EntityMetadata
+            return metadata.primaryColumns[0].databaseName
         }
     }
 

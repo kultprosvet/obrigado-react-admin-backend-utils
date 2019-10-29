@@ -22,10 +22,6 @@ const IdsList_1 = require("./types/IdsList");
 const ReactAdminDataProvider_1 = require("./types/ReactAdminDataProvider");
 function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHelperOptions) {
     //@ts-ignore
-    const metadata = ORMEntity.getRepository()
-        .metadata;
-    const primaryKey = metadata.primaryColumns[0].databaseName;
-    //@ts-ignore
     const suffix = ORMEntity.name;
     let entityAlias = suffix.toLowerCase();
     let OutList = class OutList {
@@ -71,22 +67,22 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         // GET ONE
         async getOne(id) {
             let where = {};
-            where[primaryKey] = id;
+            where[this.primaryKey] = id;
             // @ts-ignore
             return await ORMEntity.findOne({ where });
         }
         // GET_MANY
         async getMany(ids) {
             let where = {};
-            where[primaryKey] = typeorm_1.In(ids);
+            where[this.primaryKey] = typeorm_1.In(ids);
             // @ts-ignore
             return await ORMEntity.find({ where });
         }
         // GET_MANY_REFERENCE
         async getManyReference(params) {
             let where = {};
-            where[primaryKey] = params.id;
-            let query = typeorm_1.createQueryBuilder(ORMEntity, 'entity').where(`entity.${params.target}=:${primaryKey}`, where);
+            where[this.primaryKey] = params.id;
+            let query = typeorm_1.createQueryBuilder(ORMEntity, 'entity').where(`entity.${params.target}=:${this.primaryKey}`, where);
             let total = await query.getCount();
             if (params.pagination) {
                 query
@@ -103,7 +99,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         // UPDATE
         async update(id, data) {
             let where = {};
-            where[primaryKey] = id;
+            where[this.primaryKey] = id;
             // @ts-ignore
             let entity = await ORMEntity.findOne({ where });
             if (!entity)
@@ -183,6 +179,12 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
                     }
                 }
             }
+        }
+        get primaryKey() {
+            //@ts-ignore
+            const metadata = ORMEntity.getRepository()
+                .metadata;
+            return metadata.primaryColumns[0].databaseName;
         }
     };
     __decorate([
