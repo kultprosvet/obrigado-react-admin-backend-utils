@@ -218,7 +218,7 @@ export function createBaseCrudResolver<
             for (let id of ids) {
                 try {
                     // @ts-ignore
-                    let entity = await validateEntityRelations(ORMEntity, id,primaryKey)
+                    let entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
                     await entity.remove()
                     removedIds.push(id)
                 } catch (e) {
