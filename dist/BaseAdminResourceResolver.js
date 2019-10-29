@@ -130,7 +130,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         // DELETE
         async delete(id) {
             // @ts-ignore
-            let entity = await validateEntityRelations(ORMEntity, id, primaryKey);
+            let entity = await validateEntityRelations(ORMEntity, id, this.primaryKey);
             await entity.remove();
             return entity;
         }
