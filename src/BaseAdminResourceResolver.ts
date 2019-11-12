@@ -26,12 +26,11 @@ import {GQLReactAdminGetManyReferenceParams} from "./types/GQLReactAdminGetManyR
 import {IdsList} from "./types/IdsList";
 import {ReactAdminDataProvider} from "./types/ReactAdminDataProvider";
 
-
 export function createBaseCrudResolver<
     T extends ClassType,
     T2 extends ClassType,
     O extends ClassType<BaseEntity>,
->(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):any {
+>(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):ClassType<ReactAdminDataProvider> {
 
     //@ts-ignore
     const suffix = ORMEntity.name
@@ -45,7 +44,7 @@ export function createBaseCrudResolver<
     }
 
     @Resolver({ isAbstract: true })
-    abstract class BaseResolver extends ReactAdminDataProvider{
+    class BaseResolver extends ReactAdminDataProvider{
         @Authorized('admin')
         @Query(type => OutList, {
             name: `admin${suffix}List`,

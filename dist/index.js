@@ -12,4 +12,5 @@ __export(require("./resolvers/AdminDataResolver"));
 __export(require("./utils/authCheckerAdmin"));
 __export(require("./utils/getAdministratorData"));
 __export(require("./utils/getJWTToken"));
+__export(require("./types/IdsList"));
 //# sourceMappingURL=index.js.map
