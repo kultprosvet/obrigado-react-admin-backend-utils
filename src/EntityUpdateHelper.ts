@@ -4,16 +4,15 @@ import {
     EntityMetadata,
     ObjectLiteral,
 } from 'typeorm'
-import { saveFile } from './utils/saveFile'
 
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata'
 import { isObject } from './utils/isObject'
 import { ApolloError } from 'apollo-server-errors'
 import {GQLFileInput} from "./types/GQLFileInput";
+import {FileHandler} from "./types/FileHandler";
 export type EntityUpdateHelperOptions={
     ignore: Array<string>,
-    fileSavePath:string|null,
-    fileBaseUrl:string|null,
+    fileHandler?:FileHandler
 }
 export class EntityUpdateHelper<ORM> {
     EntityClass: any
@@ -29,7 +28,7 @@ export class EntityUpdateHelper<ORM> {
         data: any,
         options?:Partial<EntityUpdateHelperOptions>,
     ): Promise<void> {
-        const defaultOptions={ ignore: []  ,fileSavePath:null,fileBaseUrl:null}
+        const defaultOptions={ ignore: []  }
         let helper = new EntityUpdateHelper()
         helper.entity = entity
         helper.EntityClass = entity.constructor
@@ -59,10 +58,18 @@ export class EntityUpdateHelper<ORM> {
             let fieldName = this.getFieldName(p)
             if (p == 'id') continue
             //handle file upload
-            if (p.endsWith('_file')) {
-                if (!data[p]) continue
-                this.saveFileField(p, data[p])
-                continue
+            if (data[p] instanceof GQLFileInput){
+                 if (this.options && this.options.fileHandler) {
+                     //@ts-ignore
+                     if (entity[p]){
+                         //@ts-ignore
+                        await this.options.fileHandler.deleteFile(entity[p])
+                     }
+                     //@ts-ignore
+                     entity[p]=await this.options.fileHandler.saveFile(data[p])
+                 }else {
+                     throw new Error("Please specify file handler in options")
+                 }
             }
             //update to many relation
             if (p.endsWith('_ids') && !this.getRelation(fieldName).isCascadeUpdate) {
@@ -119,13 +126,7 @@ export class EntityUpdateHelper<ORM> {
             entity[p] = data[p]
         }
     }
-    saveFileField(field: string, value: GQLFileInput) {
-        let fieldName = field.substr(0, field.length - 5)
-        if (!this.options.fileSavePath) throw new Error("Please specify fileSavePath in helper options")
-        if (!this.options.fileBaseUrl) throw new Error("Please specify fileBaseUrl in helper options")
-        //@ts-ignore
-        this.entity[fieldName] = `${this.options.fileBaseUrl}/${saveFile(value, this.options.fileSavePath)}`
-    }
+
 
     async updateRelatedEntitiesByIds(field: string, ids: []) {
         let fieldName = this.getFieldName(field)

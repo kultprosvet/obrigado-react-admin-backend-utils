@@ -24,6 +24,7 @@
   "homepage": "https://github.com/kultprosvet/react-admin-helper#readme",
   "dependencies": {
     "apollo-server-errors": "^2.3.1",
+    "aws-sdk": "^2.578.0",
     "bcrypt": "^3.0.6",
     "cookie": "^0.4.0",
     "jsonwebtoken": "^8.5.0",
@@ -44,7 +45,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
     "type-graphql": "latest",
-    "typeorm": "latest",
+    "typeorm": "0.2.20",
     "typescript": "^3.5.3"
   }
 }

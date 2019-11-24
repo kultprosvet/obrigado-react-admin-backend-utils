@@ -4,6 +4,6 @@ import {Field, InputType} from "type-graphql";
 export class GQLFileInput {
     @Field({nullable:true})
     file_name: string
-    @Field()
+    @Field({description:"File body in base64 encoding"})
     body: string
 }
