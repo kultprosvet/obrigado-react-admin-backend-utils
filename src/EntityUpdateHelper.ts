@@ -57,11 +57,11 @@ export class EntityUpdateHelper<ORM> {
                 continue
             let fieldName = this.getFieldName(p)
             if (p == 'id') continue
-            //handle file upload
-            if (data[p] instanceof GQLFileInput){
+            //handle file upl oad
+            if (isFileInput(data[p])){
                  if (this.options && this.options.fileHandler) {
                      //@ts-ignore
-                     if (entity[p]){
+                     if (entity[p] ){
                          //@ts-ignore
                         await this.options.fileHandler.deleteFile(entity[p])
                      }
@@ -70,6 +70,7 @@ export class EntityUpdateHelper<ORM> {
                  }else {
                      throw new Error("Please specify file handler in options")
                  }
+                 continue
             }
             //update to many relation
             if (p.endsWith('_ids') && !this.getRelation(fieldName).isCascadeUpdate) {
@@ -318,4 +319,7 @@ export class EntityUpdateHelper<ORM> {
             `Unable to find relation for ${fieldName} in ${this.metadata.name}`,
         )
     }
+}
+function isFileInput(obj: any): obj is GQLFileInput {
+    return (obj as GQLFileInput).body !== undefined;
 }

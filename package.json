@@ -44,8 +44,6 @@
     "tslint": "5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "type-graphql": "latest",
-    "typeorm": "0.2.20",
     "typescript": "^3.5.3"
   }
 }

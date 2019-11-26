@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const isObject_1 = require("./utils/isObject");
 const apollo_server_errors_1 = require("apollo-server-errors");
-const GQLFileInput_1 = require("./types/GQLFileInput");
 class EntityUpdateHelper {
     constructor() { }
     static async update(entity, data, options) {
@@ -35,8 +34,8 @@ class EntityUpdateHelper {
             let fieldName = this.getFieldName(p);
             if (p == 'id')
                 continue;
-            //handle file upload
-            if (data[p] instanceof GQLFileInput_1.GQLFileInput) {
+            //handle file upl oad
+            if (isFileInput(data[p])) {
                 if (this.options && this.options.fileHandler) {
                     //@ts-ignore
                     if (entity[p]) {
@@ -49,6 +48,7 @@ class EntityUpdateHelper {
                 else {
                     throw new Error("Please specify file handler in options");
                 }
+                continue;
             }
             //update to many relation
             if (p.endsWith('_ids') && !this.getRelation(fieldName).isCascadeUpdate) {
@@ -274,4 +274,7 @@ class EntityUpdateHelper {
     }
 }
 exports.EntityUpdateHelper = EntityUpdateHelper;
+function isFileInput(obj) {
+    return obj.body !== undefined;
+}
 //# sourceMappingURL=EntityUpdateHelper.js.map
