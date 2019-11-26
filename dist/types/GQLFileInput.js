@@ -17,7 +17,7 @@ __decorate([
     __metadata("design:type", String)
 ], GQLFileInput.prototype, "file_name", void 0);
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field({ description: "File body in base64 encoding" }),
     __metadata("design:type", String)
 ], GQLFileInput.prototype, "body", void 0);
 GQLFileInput = __decorate([

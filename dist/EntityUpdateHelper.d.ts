@@ -1,10 +1,9 @@
 import { BaseEntity, EntityMetadata, ObjectLiteral } from 'typeorm';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
-import { GQLFileInput } from "./types/GQLFileInput";
+import { FileHandler } from "./types/FileHandler";
 export declare type EntityUpdateHelperOptions = {
     ignore: Array<string>;
-    fileSavePath: string | null;
-    fileBaseUrl: string | null;
+    fileHandler?: FileHandler;
 };
 export declare class EntityUpdateHelper<ORM> {
     EntityClass: any;
@@ -18,7 +17,6 @@ export declare class EntityUpdateHelper<ORM> {
     static update<ORM extends BaseEntity>(entity: ORM, data: any, options?: Partial<EntityUpdateHelperOptions>): Promise<void>;
     constructor();
     _updateEntity(): Promise<void>;
-    saveFileField(field: string, value: GQLFileInput): void;
     updateRelatedEntitiesByIds(field: string, ids: []): Promise<void>;
     updateRelatedEntitiesByIdsCascade(field: string, ids: []): Promise<void>;
     updateRelationsEntitiesCascade(field: string, value: any[]): Promise<void>;

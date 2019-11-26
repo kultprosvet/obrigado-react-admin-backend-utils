@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const saveFile_1 = require("./utils/saveFile");
 const isObject_1 = require("./utils/isObject");
 const apollo_server_errors_1 = require("apollo-server-errors");
+const GQLFileInput_1 = require("./types/GQLFileInput");
 class EntityUpdateHelper {
     constructor() { }
     static async update(entity, data, options) {
-        const defaultOptions = { ignore: [], fileSavePath: null, fileBaseUrl: null };
+        const defaultOptions = { ignore: [] };
         let helper = new EntityUpdateHelper();
         helper.entity = entity;
         helper.EntityClass = entity.constructor;
@@ -36,11 +36,19 @@ class EntityUpdateHelper {
             if (p == 'id')
                 continue;
             //handle file upload
-            if (p.endsWith('_file')) {
-                if (!data[p])
-                    continue;
-                this.saveFileField(p, data[p]);
-                continue;
+            if (data[p] instanceof GQLFileInput_1.GQLFileInput) {
+                if (this.options && this.options.fileHandler) {
+                    //@ts-ignore
+                    if (entity[p]) {
+                        //@ts-ignore
+                        await this.options.fileHandler.deleteFile(entity[p]);
+                    }
+                    //@ts-ignore
+                    entity[p] = await this.options.fileHandler.saveFile(data[p]);
+                }
+                else {
+                    throw new Error("Please specify file handler in options");
+                }
             }
             //update to many relation
             if (p.endsWith('_ids') && !this.getRelation(fieldName).isCascadeUpdate) {
@@ -86,15 +94,6 @@ class EntityUpdateHelper {
             //@ts-ignore
             entity[p] = data[p];
         }
-    }
-    saveFileField(field, value) {
-        let fieldName = field.substr(0, field.length - 5);
-        if (!this.options.fileSavePath)
-            throw new Error("Please specify fileSavePath in helper options");
-        if (!this.options.fileBaseUrl)
-            throw new Error("Please specify fileBaseUrl in helper options");
-        //@ts-ignore
-        this.entity[fieldName] = `${this.options.fileBaseUrl}/${saveFile_1.saveFile(value, this.options.fileSavePath)}`;
     }
     async updateRelatedEntitiesByIds(field, ids) {
         let fieldName = this.getFieldName(field);
