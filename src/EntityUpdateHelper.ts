@@ -59,14 +59,19 @@ export class EntityUpdateHelper<ORM> {
             if (p == 'id') continue
             //handle file upl oad
             if (isFileInput(data[p])){
+                 let fileData=data[p] as GQLFileInput
+                 if (fileData.skip) continue
                  if (this.options && this.options.fileHandler) {
                      //@ts-ignore
                      if (entity[p] ){
                          //@ts-ignore
                         await this.options.fileHandler.deleteFile(entity[p])
+                        //@ts-ignore
+                        entity[p]=null
                      }
+                     if (fileData.file_name==null && fileData.body==null) continue
                      //@ts-ignore
-                     entity[p]=await this.options.fileHandler.saveFile(data[p])
+                     entity[p]=await this.options.fileHandler.saveFile(fileData)
                  }else {
                      throw new Error("Please specify file handler in options")
                  }
@@ -321,5 +326,11 @@ export class EntityUpdateHelper<ORM> {
     }
 }
 function isFileInput(obj: any): obj is GQLFileInput {
-    return (obj as GQLFileInput).body !== undefined;
+    if (!obj) return false
+    if (typeof obj!=='object') return false
+    const fileProps=['body','file_name','skip']
+    for (let p in obj){
+        if (!fileProps.includes(p)) return false
+    }
+    return true
 }

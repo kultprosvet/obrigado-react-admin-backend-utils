@@ -17,9 +17,12 @@ class LocalFileHandler {
             };
         }
     }
-    async deleteFile(path) {
-        if (fs.existsSync(path)) {
-            fs.unlinkSync(path);
+    async deleteFile(fPath) {
+        if (fs.existsSync(fPath)) {
+            fs.unlinkSync(fPath);
+        }
+        else {
+            console.log(`File ${path.resolve(fPath)} not exists`);
         }
         return Promise.resolve();
     }

@@ -23,9 +23,11 @@ export class LocalFileHandler implements FileHandler{
         }
 
     }
-    async deleteFile(path: string): Promise<void> {
-        if (fs.existsSync(path)){
-            fs.unlinkSync(path)
+    async deleteFile(fPath: string): Promise<void> {
+        if (fs.existsSync(fPath)){
+            fs.unlinkSync(fPath)
+        }else {
+            console.log(`File ${path.resolve(fPath)} not exists`)
         }
         return Promise.resolve();
     }

@@ -5,11 +5,11 @@ Set of helpers for [React Admin](https://github.com/marmelab/react-admin)
 # Installation
 Install package:
 ```
-npm install git+https://:git@github.com:kultprosvet/obrigado-react-admin-backend-utils.git
+npm install obrigado-react-admin-backend-utils
 ```
 or
 ```
-yarn add git+https://:git@github.com:kultprosvet/obrigado-react-admin-backend-utils.git
+yarn add obrigado-react-admin-backend-utils
 ```
 # Authorization setup
 If want to use default auth 

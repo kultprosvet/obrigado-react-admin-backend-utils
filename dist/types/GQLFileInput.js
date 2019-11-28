@@ -13,13 +13,17 @@ const type_graphql_1 = require("type-graphql");
 let GQLFileInput = class GQLFileInput {
 };
 __decorate([
-    type_graphql_1.Field({ nullable: true }),
+    type_graphql_1.Field({ nullable: true, description: "name of the file, set null if you want to delete current file" }),
     __metadata("design:type", String)
 ], GQLFileInput.prototype, "file_name", void 0);
 __decorate([
-    type_graphql_1.Field({ description: "File body in base64 encoding" }),
+    type_graphql_1.Field({ description: "File body in base64 encoding,set null if you want to delete current file", nullable: true }),
     __metadata("design:type", String)
 ], GQLFileInput.prototype, "body", void 0);
+__decorate([
+    type_graphql_1.Field({ defaultValue: false, description: "Set this to true if you want to leave current file unchanged" }),
+    __metadata("design:type", Boolean)
+], GQLFileInput.prototype, "skip", void 0);
 GQLFileInput = __decorate([
     type_graphql_1.InputType('FileInput')
 ], GQLFileInput);

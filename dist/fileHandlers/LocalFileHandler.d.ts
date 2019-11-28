@@ -6,7 +6,7 @@ interface LocalFileHandlerConfig {
 export declare class LocalFileHandler implements FileHandler {
     config: LocalFileHandlerConfig;
     constructor(config: LocalFileHandlerConfig);
-    deleteFile(path: string): Promise<void>;
+    deleteFile(fPath: string): Promise<void>;
     saveFile(file: GQLFileInput): Promise<string>;
 }
 export {};
