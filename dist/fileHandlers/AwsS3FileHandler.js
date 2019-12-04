@@ -11,6 +11,7 @@ class AwsS3FileHandler {
         const s3 = new AWS.S3({
             accessKeyId: this.config.awsKey,
             secretAccessKey: this.config.awsSecret,
+            region: this.config.region
         });
         const fileKeyRegEx = new RegExp(`${this.config.folder}(.*)`);
         const result = fileKeyRegEx.exec(path);
@@ -36,6 +37,7 @@ class AwsS3FileHandler {
         const s3 = new AWS.S3({
             accessKeyId: this.config.awsKey,
             secretAccessKey: this.config.awsSecret,
+            region: this.config.region
         });
         let buff = new Buffer(data.body.replace(/^data.*base64,/, ''), 'base64');
         let ext = path.extname(data.file_name);

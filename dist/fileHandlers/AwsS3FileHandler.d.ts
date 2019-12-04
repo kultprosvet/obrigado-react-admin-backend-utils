@@ -5,6 +5,7 @@ export interface AwsFileHandlerConfig {
     awsSecret: string;
     bucket: string;
     folder: string;
+    region: string;
 }
 export declare class AwsS3FileHandler implements FileHandler {
     config: AwsFileHandlerConfig;
