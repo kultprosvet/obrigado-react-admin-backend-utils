@@ -10,11 +10,16 @@ class AwsS3FileHandler {
     deleteFile(path) {
         const s3 = new AWS.S3({
             accessKeyId: this.config.awsKey,
-            secretAccessKey: this.config.awsSecret
+            secretAccessKey: this.config.awsSecret,
         });
+        const fileKeyRegEx = new RegExp(`${this.config.folder}(.*)`);
+        const result = fileKeyRegEx.exec(path);
+        if (!result)
+            throw new Error(`Unable to extract file key from path ${path} and folder ${this.config.folder}`);
+        const fileKey = result[0];
         const params = {
             Bucket: this.config.bucket,
-            Key: path,
+            Key: fileKey,
         };
         return new Promise((resolve, reject) => {
             s3.deleteObject(params, (err, s3Data) => {
@@ -30,7 +35,7 @@ class AwsS3FileHandler {
     saveFile(data) {
         const s3 = new AWS.S3({
             accessKeyId: this.config.awsKey,
-            secretAccessKey: this.config.awsSecret
+            secretAccessKey: this.config.awsSecret,
         });
         let buff = new Buffer(data.body.replace(/^data.*base64,/, ''), 'base64');
         let ext = path.extname(data.file_name);
@@ -39,7 +44,8 @@ class AwsS3FileHandler {
         const params = {
             Bucket: this.config.bucket,
             Key: fileName,
-            Body: buff
+            Body: buff,
+            ACL: 'public-read',
         };
         return new Promise((resolve, reject) => {
             s3.upload(params, function (err, s3Data) {

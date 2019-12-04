@@ -1,10 +1,9 @@
 import { FileHandler } from "../types/FileHandler";
-import { GQLFileInput } from "..";
+import { GQLFileInput } from "../types/GQLFileInput";
 export interface AwsFileHandlerConfig {
     awsKey: string;
     awsSecret: string;
     bucket: string;
-    awsRegion: string;
     folder: string;
 }
 export declare class AwsS3FileHandler implements FileHandler {
