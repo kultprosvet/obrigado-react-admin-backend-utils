@@ -15,4 +15,6 @@ export class GQLReactAdminGetManyReferenceParams {
     sort: GQLReactAdminSort
     @Field(type => [GQLReactAdminFilterParam], { nullable: true })
     filter: GQLReactAdminFilterParam
+    @Field({nullable:true,deprecationReason:"This parameter is present for compatibility with react admin v2 "})
+    source:string
 }

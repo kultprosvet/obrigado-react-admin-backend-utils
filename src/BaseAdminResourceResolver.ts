@@ -120,11 +120,9 @@ export function createBaseCrudResolver<
             @Arg('params', type => GQLReactAdminGetManyReferenceParams)
             params: GQLReactAdminGetManyReferenceParams,
         ) {
-            let where:ObjectLiteral={}
-            where[this.primaryKey]=params.id
             let query = createQueryBuilder(ORMEntity, 'entity').where(
-                `entity.${params.target}=:${this.primaryKey}`,
-                where,
+                `entity.${params.target}=:id`,
+                {id:params.id},
             )
             let total = await query.getCount()
             if (params.pagination) {
