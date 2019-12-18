@@ -36,7 +36,7 @@ __decorate([
     __metadata("design:type", GQLReactAdminFilterParam_1.GQLReactAdminFilterParam)
 ], GQLReactAdminGetManyReferenceParams.prototype, "filter", void 0);
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field({ nullable: true, deprecationReason: "This parameter is present for compatibility with react admin v2 " }),
     __metadata("design:type", String)
 ], GQLReactAdminGetManyReferenceParams.prototype, "source", void 0);
 GQLReactAdminGetManyReferenceParams = __decorate([

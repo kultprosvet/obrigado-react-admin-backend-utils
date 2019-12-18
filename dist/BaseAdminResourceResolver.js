@@ -80,9 +80,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         }
         // GET_MANY_REFERENCE
         async getManyReference(params) {
-            let where = {};
-            where[this.primaryKey] = params.id;
-            let query = typeorm_1.createQueryBuilder(ORMEntity, 'entity').where(`entity.${params.target}=:${this.primaryKey}`, where);
+            let query = typeorm_1.createQueryBuilder(ORMEntity, 'entity').where(`entity.${params.target}=:id`, { id: params.id });
             let total = await query.getCount();
             if (params.pagination) {
                 query
