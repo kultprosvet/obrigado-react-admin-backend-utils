@@ -1,4 +1,5 @@
-Set of helpers for [React Admin](https://github.com/marmelab/react-admin)
+Set of helpers for [React Admin](https://github.com/marmelab/react-admin)\
+To speed up admin panel development use [obrigado frontend helpers](https://github.com/kultprosvet/obrigado-react-admin-frontend-utils)
 # Requirments
 + Typeorm
 + Typegraphql
@@ -83,29 +84,95 @@ export const authChecker: AuthChecker<any> = (
     return roles.includes(context.user.type)
 }
 ```
-# Generate resolver for your entity
-To generate resolver class call\
- createBaseCrudResolver(GraphQLModelClass,GraphQLInputClass,TypeORMEntityClass)\
- example:
+# Generating resolvers for your entities
+The obrigado-react-admin-backend-utils package allows you to automatically create all necessary resolvers for React Admin with the help of createBaseCrudResolver function. It takes your GraphQL object and input types and TypeORM entity as arguments.
+
+Let's say you want to create a User entity in your project.
+You will need to create an object GraphQL type (GraphQLModelClass) that will be used for information output:
 ```javascript
+import { Field, Int, ObjectType } from 'type-graphql'
+
+@ObjectType('User')
+export class UserGraphQL {
+    @Field(type => Int)
+    id: number
+    @Field(type => Text)
+    email: string
+    @Field(type => Text, { nullable: true })
+    token: string
+}
+```
+You also need to create an input GraphQL type (GraphQLInputClass) that describes incoming data:
+```javascript
+import { Field, InputType, Text } from 'type-graphql'
+
+@InputType('UserInput')
+export class UserGraphQLInput {
+    @Field(type => Text)
+    email: string
+    @Field(type => Text)
+    password: string
+}
+```
+Finally, create a TypeORM entity (TypeORMEntityClass) that describes how User is stored in your database:
+```javascript
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm'
+
+@Entity('users')
+export class User extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number
+    @Column()
+    email: string
+    @Column()
+    password: string
+}
+```
+  
+Now you can call createBaseCrudResolver(GraphQLModelClass, GraphQLInputClass, TypeORMEntityClass) to generate resolver class for User entity:
+```javascript
+import { Resolver } from 'type-graphql'
 import { createBaseCrudResolver } from 'obrigado-react-admin-backend-utils'
-...
-const EntityBaseResolver = createBaseCrudResolver(
-    EntityGraphQL,
-    EntityGraphQLInput,
-    Entity
+import { UserGraphQL } from '../graphql/UserGraphQL'
+import { UserGraphQLInput } from "../graphql/UserGraphQLInput"
+import { User } from '../models/UserEntity'
+
+const UserBaseResolver = createBaseCrudResolver(
+    UserGraphQL,
+    UserGraphQLInput,
+    User
 )
 @Resolver()
-export class _EntityResolver extends EntityBaseResolver {}    
+export class _UserResolver extends UserBaseResolver {}
 ```
-This will generate resolver with following methods:\
-+ adminEntityGetList
-+ adminEntityGetOne
-+ adminEntityCreate
-+ adminEntityUpdate
-+ adminEntityUpdateMany
-+ adminEntityGetManyReference
-+ adminEntityDelete
-+ adminEntityDeleteMany
+This will generate a resolver with following methods:
++ adminUserGetList
++ adminUserGetOne
++ adminUserCreate
++ adminUserUpdate
++ adminUserUpdateMany
++ adminUserGetManyReference
++ adminUserDelete
++ adminUserDeleteMany
 
-To speed up admin panel development use [obrigado frontend helpers](https://github.com/kultprosvet/obrigado-react-admin-frontend-utils)
+### Entities with file handling
+If you want your entity to handle files as well you can pass options with File Handler to createBaseCrudResolver as a last argument. 
+
+You can find more on how to configure available File Handlers here:
++ [File Handlers](doc/FileHandlers.md)
+
+### Creating or re-defining resolver methods
+On top of the existing methods you can add your own methods or re-define already existing ones.
+
+If you want to implement your own filter logic you can redefine applyFilterToQuery method that is added to your entity by createBaseCrudResolver function. By default this method does full-text search.
+
+You can also re-define existing methods in AdminAuthResolver and AdminDataResolver to implement you own authentication logic.
+
+AdminAuthResolver and AdminDataResolver have the following methods:
++ adminLogin
++ adminCheck
++ adminLogOut
++ update
++ create
+
+By default admin is authorized by JWT token that is saved in cookies. 

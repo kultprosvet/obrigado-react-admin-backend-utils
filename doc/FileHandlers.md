@@ -31,14 +31,10 @@ export class _EntityResolver extends EntityBaseResolver {}
 ##File Handler for AWS S3
 If you store files at AWS S3, you can use AwsS3FileHandler class to create the File Handler.
 
-AwsS3FileHandler's constructor requires config object with your AWS account's key, secret, bucket name, region code and folder. If the specified folder doesn't exist in the specified bucket, it will be created automatically.
+AwsS3FileHandler's constructor requires a config object with your AWS account's key, secret, bucket name, region code and folder. If the specified folder doesn't exist in the specified bucket, it will be created automatically.
 ```javascript
 import {
     AwsS3FileHandler,
-    createBaseCrudResolver,
-} from 'obrigado-react-admin-backend-utils'
-import {
-    LocalFileHandler,
     createBaseCrudResolver,
 } from 'obrigado-react-admin-backend-utils'
 ...
