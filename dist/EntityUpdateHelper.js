@@ -291,6 +291,8 @@ function isFileInput(obj) {
         if (!fileProps.includes(p))
             return false;
     }
+    if (!obj.body && !obj.skip)
+        return false;
     return true;
 }
 //# sourceMappingURL=EntityUpdateHelper.js.map
