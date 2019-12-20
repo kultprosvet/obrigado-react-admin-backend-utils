@@ -20,6 +20,7 @@ const Administrator_1 = require("../models/Administrator");
 const apollo_server_errors_1 = require("apollo-server-errors");
 const EntityUpdateHelper_1 = require("../EntityUpdateHelper");
 const bcrypt = require("bcrypt");
+const RoleConfig_1 = require("../roles/RoleConfig");
 const AdminDataBaseResolver = BaseAdminResourceResolver_1.createBaseCrudResolver(GQLAdministrator_1.GQLAdministrator, GQLAdministratorInput_1.GQLAdministratorInput, Administrator_1.Administrator);
 let AdminDataResolver = class AdminDataResolver extends AdminDataBaseResolver {
     async update(id, data) {
@@ -42,6 +43,15 @@ let AdminDataResolver = class AdminDataResolver extends AdminDataBaseResolver {
         await entity.save();
         return entity;
     }
+    async getRoles() {
+        return RoleConfig_1.RoleConfig.getRolesList();
+    }
+    permissions(admin) {
+        return RoleConfig_1.RoleConfig.getPermissions(admin.role);
+    }
+    async role(admin) {
+        return RoleConfig_1.RoleConfig.getRole(admin.role);
+    }
 };
 __decorate([
     type_graphql_1.Authorized('admin'),
@@ -60,8 +70,29 @@ __decorate([
     __metadata("design:paramtypes", [GQLAdministratorInput_1.GQLAdministratorInput]),
     __metadata("design:returntype", Promise)
 ], AdminDataResolver.prototype, "create", null);
+__decorate([
+    type_graphql_1.Authorized('admin'),
+    type_graphql_1.Query(type => [String]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminDataResolver.prototype, "getRoles", null);
+__decorate([
+    type_graphql_1.FieldResolver(type => [String]),
+    __param(0, type_graphql_1.Root()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Administrator_1.Administrator]),
+    __metadata("design:returntype", void 0)
+], AdminDataResolver.prototype, "permissions", null);
+__decorate([
+    type_graphql_1.FieldResolver(type => String),
+    __param(0, type_graphql_1.Root()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Administrator_1.Administrator]),
+    __metadata("design:returntype", Promise)
+], AdminDataResolver.prototype, "role", null);
 AdminDataResolver = __decorate([
-    type_graphql_1.Resolver()
+    type_graphql_1.Resolver(type => GQLAdministrator_1.GQLAdministrator)
 ], AdminDataResolver);
 exports.AdminDataResolver = AdminDataResolver;
 //# sourceMappingURL=AdminDataResolver.js.map

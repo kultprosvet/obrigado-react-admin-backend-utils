@@ -5,5 +5,6 @@ export declare class Administrator extends BaseEntity {
     username: string;
     first_name: string;
     last_name: string;
+    role: string;
     token: string;
 }

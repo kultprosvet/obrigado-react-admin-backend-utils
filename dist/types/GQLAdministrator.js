@@ -32,6 +32,10 @@ __decorate([
     type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], GQLAdministrator.prototype, "token", void 0);
+__decorate([
+    type_graphql_1.Field(type => [String], { defaultValue: [] }),
+    __metadata("design:type", Array)
+], GQLAdministrator.prototype, "permissions", void 0);
 GQLAdministrator = __decorate([
     type_graphql_1.ObjectType('Administrator')
 ], GQLAdministrator);

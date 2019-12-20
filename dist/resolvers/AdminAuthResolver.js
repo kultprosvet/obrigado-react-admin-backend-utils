@@ -46,7 +46,7 @@ class AdminAuthResolver {
     async adminCheck(context) {
         if (!context.administrator)
             throw new apollo_server_errors_1.ApolloError('Admin not authorized');
-        return context.administrator;
+        return Administrator_1.Administrator.findOneOrFail({ id: context.administrator.id });
     }
     async adminLogOut(ctx) {
         ctx.session.res.clearCookie('admin_token');

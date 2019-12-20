@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 import {Administrator} from "../models/Administrator";
 import * as bcrypt from 'bcrypt'
-export class AddAdmin1566135242900 implements MigrationInterface {
+export class AddAdmin1566135244000 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<any> {
         let admin=new Administrator()
         admin.first_name="Admin"

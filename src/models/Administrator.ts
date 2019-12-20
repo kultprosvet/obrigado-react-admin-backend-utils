@@ -2,7 +2,7 @@ import {BaseEntity, Column, Entity, Index,  PrimaryGeneratedColumn} from "typeor
 @Entity('administrators')
 @Index('IDX_FULL_TEXT',["username","first_name","last_name"], { fulltext: true })
 export class Administrator extends BaseEntity{
-    @PrimaryGeneratedColumn ()
+    @PrimaryGeneratedColumn()
     id:number
     @Column()
     password:string
@@ -13,6 +13,9 @@ export class Administrator extends BaseEntity{
     first_name:string
     @Column({nullable:true})
     last_name:string
+
+    @Column()
+    role:string
 
     token:string
 

@@ -21,7 +21,7 @@ export const getAdministratorData = (req: any) => {
 
         if (req.headers.authorization) {
             token = req.headers.authorization.replace('Bearer ', '')
-        } else if (cookies.admin_token) {
+        } else if (cookies && cookies.admin_token) {
             token = cookies.admin_token
         }
 

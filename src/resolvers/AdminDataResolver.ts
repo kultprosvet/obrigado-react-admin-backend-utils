@@ -1,18 +1,19 @@
 import {createBaseCrudResolver} from "../BaseAdminResourceResolver";
-import {Arg, Authorized, Int, Mutation, Resolver} from "type-graphql";
+import {Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
 import {GQLAdministrator} from "../types/GQLAdministrator";
 import {GQLAdministratorInput} from "../types/GQLAdministratorInput";
 import {Administrator} from "../models/Administrator";
 import {ApolloError} from "apollo-server-errors";
 import {EntityUpdateHelper} from "../EntityUpdateHelper";
 import * as bcrypt from "bcrypt";
+import {RoleConfig} from "../roles/RoleConfig";
 
 const AdminDataBaseResolver = createBaseCrudResolver(
     GQLAdministrator,
     GQLAdministratorInput,
     Administrator
 )
-@Resolver()
+@Resolver(type=>GQLAdministrator)
 export class AdminDataResolver extends AdminDataBaseResolver {
     @Authorized('admin')
     @Mutation(type => GQLAdministrator, { name: `adminAdministratorUpdate` })
@@ -45,5 +46,20 @@ export class AdminDataResolver extends AdminDataBaseResolver {
             entity.password=bcrypt.hashSync(data.password,10)
         await entity.save()
         return entity
+    }
+    @Authorized('admin')
+    @Query(type=>[String])
+    async getRoles(){
+        return RoleConfig.getRolesList()
+    }
+
+    @FieldResolver(type=>[String])
+    permissions(@Root() admin:Administrator){
+        return RoleConfig.getPermissions(admin.role)
+    }
+
+    @FieldResolver(type=>String)
+    async role(@Root() admin:Administrator) {
+        return RoleConfig.getRole(admin.role)
     }
 }

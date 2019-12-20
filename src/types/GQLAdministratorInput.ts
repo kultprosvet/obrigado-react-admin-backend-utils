@@ -10,4 +10,6 @@ export class GQLAdministratorInput {
     first_name:string
     @Field({nullable:true})
     password:string
+    @Field({nullable:true})
+    role: string
 }

@@ -231,7 +231,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         __param(0, type_graphql_1.Arg('id', type => type_graphql_1.Int)),
         __param(1, type_graphql_1.Arg('data', type => inputTypeCls)),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number, Boolean]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "update", null);
     __decorate([
@@ -240,7 +240,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         __param(0, type_graphql_1.Arg('ids', type => [type_graphql_1.Int])),
         __param(1, type_graphql_1.Arg('data', type => inputTypeCls)),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Array, Boolean]),
+        __metadata("design:paramtypes", [Array, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "updateMany", null);
     __decorate([
@@ -248,7 +248,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         type_graphql_1.Mutation(type => objectTypeCls, { name: `admin${suffix}Create` }),
         __param(0, type_graphql_1.Arg('data', type => inputTypeCls)),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Boolean]),
+        __metadata("design:paramtypes", [Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "create", null);
     __decorate([

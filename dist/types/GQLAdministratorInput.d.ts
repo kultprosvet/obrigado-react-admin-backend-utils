@@ -3,4 +3,5 @@ export declare class GQLAdministratorInput {
     last_name: string;
     first_name: string;
     password: string;
+    role: string;
 }

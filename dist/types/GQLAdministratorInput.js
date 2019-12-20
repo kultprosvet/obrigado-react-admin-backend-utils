@@ -28,6 +28,10 @@ __decorate([
     type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], GQLAdministratorInput.prototype, "password", void 0);
+__decorate([
+    type_graphql_1.Field({ nullable: true }),
+    __metadata("design:type", String)
+], GQLAdministratorInput.prototype, "role", void 0);
 GQLAdministratorInput = __decorate([
     type_graphql_1.InputType('AdministratorInput')
 ], GQLAdministratorInput);

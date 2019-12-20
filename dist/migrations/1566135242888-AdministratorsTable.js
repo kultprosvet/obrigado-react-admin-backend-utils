@@ -3,36 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 class AdministratorsTable1566135242888 {
     async up(queryRunner) {
-        await queryRunner.createTable(new typeorm_1.Table({
-            name: 'administrators',
-            columns: [
-                {
-                    name: 'id',
-                    type: 'int',
-                    isPrimary: true,
-                    isGenerated: true,
-                    generationStrategy: 'increment',
-                },
-                {
-                    name: 'username',
-                    type: 'varchar',
-                },
-                {
-                    name: 'last_name',
-                    type: 'varchar',
-                    isNullable: true,
-                },
-                {
-                    name: 'first_name',
-                    type: 'varchar',
-                    isNullable: true,
-                },
-                {
-                    name: 'password',
-                    type: 'varchar',
-                },
-            ],
-        }), true);
+        await queryRunner.query('CREATE TABLE `administrators` (`id` int NOT NULL AUTO_INCREMENT, `username` varchar(255) NOT NULL, `last_name` varchar(255) NULL, `first_name` varchar(255) NULL, `password` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB');
         await queryRunner.createIndex('administrators', new typeorm_1.TableIndex({
             name: 'IDX_QUESTION_USERNAME',
             isUnique: true,

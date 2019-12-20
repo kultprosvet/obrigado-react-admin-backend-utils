@@ -4,4 +4,5 @@ export declare class GQLAdministrator {
     last_name: string;
     first_name: string;
     token: string;
+    permissions: string[];
 }

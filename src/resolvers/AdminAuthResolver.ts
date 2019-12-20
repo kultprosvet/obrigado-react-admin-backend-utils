@@ -40,7 +40,7 @@ export class AdminAuthResolver{
     @Query(type=>GQLAdministrator)
     async adminCheck(@Ctx() context:any){
         if (!context.administrator) throw new ApolloError('Admin not authorized')
-        return context.administrator
+        return Administrator.findOneOrFail({id:context.administrator.id})
 
     }
     @Mutation(type=>GQLLogoutResult)

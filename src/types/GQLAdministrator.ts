@@ -12,4 +12,6 @@ export class GQLAdministrator {
     first_name:string
     @Field({nullable:true})
     token:string
+    @Field(type=>[String],{defaultValue:[]})
+    permissions:string[]
 }
