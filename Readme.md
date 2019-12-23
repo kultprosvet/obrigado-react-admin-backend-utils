@@ -175,4 +175,22 @@ AdminAuthResolver and AdminDataResolver have the following methods:
 + update
 + create
 
-By default admin is authorized by JWT token that is saved in cookies. 
+By default admin is authorized by JWT token that is saved in cookies.
+
+### Roles & permissions
+You can define roles and permissions in RoleConfig. Pass an array of objects containing roles and arrays with permissions to initialize it. 
+
+```javascript
+const roles:Array<Role>=[
+    {name: 'admin', permissions: ['create administrators', 'edit administrators']},
+    {name: 'moderator', permissions: ['edit something']},
+    {name: 'user', permissions: ['view something']}
+    ]
+```
+
+If the admin's role is not specified RoleConfig will assign them the first role of the array ("amdin" role by default).
+
+The following resolvers are available in AdminDataResolver:
++ getRoles (returns a list of all existing roles);
++ permissions (returns an array of admin's permissions);
++ role (returns admin's role).

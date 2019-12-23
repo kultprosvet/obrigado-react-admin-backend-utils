@@ -5,7 +5,7 @@ type Role={
 const roles:Array<Role>=[
     {name: 'admin', permissions: ['create administrators']},
     {name: 'moderator', permissions: ['edit something']},
-    {name: 'USER', permissions: ['asdfasd']}
+    {name: 'user', permissions: ['view something']}
     ]
 export const RoleConfig={
     init(r:Array<Role>){

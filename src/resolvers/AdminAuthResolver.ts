@@ -9,7 +9,7 @@ import * as moment from "moment";
 
 export class AdminAuthResolver{
     @Mutation(type=>GQLAdministrator)
-    async adminLogin(@Arg('username') username:string,@Arg('password') password:string,@Ctx() ctx:any){
+    async adminLogin(@Arg('username') username:string,@Arg('password') password:string, @Ctx() ctx:any){
         const user = await Administrator.findOne({where:{ username }})
         if (user == null) {
             throw new ApolloError(
