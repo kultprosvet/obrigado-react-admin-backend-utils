@@ -291,7 +291,7 @@ function isFileInput(obj) {
         if (!fileProps.includes(p))
             return false;
     }
-    if (!obj.body && !obj.skip)
+    if (obj.body == undefined && obj.skip == undefined)
         return false;
     return true;
 }

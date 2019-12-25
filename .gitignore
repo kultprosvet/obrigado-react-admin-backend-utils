@@ -2,3 +2,4 @@
 ReactAdminHelper.iml
 node_modules
 package-lock.json
+src/*.js
