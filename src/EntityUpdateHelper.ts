@@ -332,6 +332,6 @@ function isFileInput(obj: any): obj is GQLFileInput {
     for (let p in obj){
         if (!fileProps.includes(p)) return false
     }
-    if (obj.body==undefined && obj.skip==undefined) return false;
-    return true
+    return !(obj.body === undefined && obj.skip === undefined);
+
 }

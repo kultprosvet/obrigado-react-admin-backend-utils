@@ -291,8 +291,6 @@ function isFileInput(obj) {
         if (!fileProps.includes(p))
             return false;
     }
-    if (obj.body == undefined && obj.skip == undefined)
-        return false;
-    return true;
+    return !(obj.body === undefined && obj.skip === undefined);
 }
 //# sourceMappingURL=EntityUpdateHelper.js.map
