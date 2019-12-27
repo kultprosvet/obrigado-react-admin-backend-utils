@@ -18,7 +18,7 @@ export class AdminDataResolver extends AdminDataBaseResolver {
 
     @Authorized('admin')
     @Mutation(type => GQLAdministrator, { name: `adminAdministratorUpdate` })
-    async update1(
+    async update(
         @Arg('id', type => Int)
             id: number,
         @Arg('data', type => GQLAdministratorInput)
