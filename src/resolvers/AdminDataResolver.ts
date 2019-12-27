@@ -1,5 +1,5 @@
 import {createBaseCrudResolver} from "../BaseAdminResourceResolver";
-import {Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
+import {Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
 import {GQLAdministrator} from "../types/GQLAdministrator";
 import {GQLAdministratorInput} from "../types/GQLAdministratorInput";
 import {Administrator} from "../models/Administrator";
@@ -15,13 +15,15 @@ const AdminDataBaseResolver = createBaseCrudResolver(
 )
 @Resolver(type=>GQLAdministrator)
 export class AdminDataResolver extends AdminDataBaseResolver {
+
     @Authorized('admin')
     @Mutation(type => GQLAdministrator, { name: `adminAdministratorUpdate` })
-    async update(
+    async update1(
         @Arg('id', type => Int)
             id: number,
         @Arg('data', type => GQLAdministratorInput)
             data: GQLAdministratorInput,
+        @Ctx() context:any
     ) {
         // @ts-ignore
         let entity = await Administrator.findOne({ where: { id } })
@@ -38,7 +40,7 @@ export class AdminDataResolver extends AdminDataBaseResolver {
     }
     @Authorized('admin')
     @Mutation(type => GQLAdministrator, { name: `adminAdministratorCreate` })
-    async create(@Arg('data', type => GQLAdministratorInput) data: GQLAdministratorInput) {
+    async create(@Arg('data', type => GQLAdministratorInput) data: GQLAdministratorInput,@Ctx() context:any) {
         // @ts-ignore
         let entity = new Administrator()
         await EntityUpdateHelper.update(entity, data,{ignore:['password']})
@@ -62,4 +64,6 @@ export class AdminDataResolver extends AdminDataBaseResolver {
     async role(@Root() admin:Administrator) {
         return RoleConfig.getRole(admin.role)
     }
+
+
 }

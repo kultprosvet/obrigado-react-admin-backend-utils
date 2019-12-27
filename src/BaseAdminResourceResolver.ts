@@ -1,7 +1,7 @@
 import {
     Arg,
     Authorized,
-    ClassType,
+    ClassType, Ctx,
     Field,
     Int,
     Mutation,
@@ -30,7 +30,7 @@ export function createBaseCrudResolver<
     T extends ClassType,
     T2 extends ClassType,
     O extends ClassType<BaseEntity>,
->(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):ClassType<ReactAdminDataProvider> {
+>(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):ClassType<ReactAdminDataProvider<O,T2>> {
 
     //@ts-ignore
     const suffix = ORMEntity.name
@@ -44,7 +44,7 @@ export function createBaseCrudResolver<
     }
 
     @Resolver({ isAbstract: true })
-    class BaseResolver extends ReactAdminDataProvider{
+    class BaseResolver extends ReactAdminDataProvider<O,T2>{
         @Authorized('admin')
         @Query(type => OutList, {
             name: `admin${suffix}List`,
@@ -53,13 +53,14 @@ export function createBaseCrudResolver<
         async getList(
             @Arg('params', type => GQLReactAdminListParams)
             params: GQLReactAdminListParams,
+            @Ctx() context:any
         ) {
             //@ts-ignore
             const metadata = ORMEntity.getRepository()
                 .metadata as EntityMetadata
             let query = createQueryBuilder(ORMEntity, entityAlias)
             if (params.filter) {
-                this.applyFilterToQuery(query, params, metadata)
+                this.applyFilterToQuery(query, params, metadata,context)
             }
             this.alterGetListQuery(query, params)
             let total = await query.getCount()
@@ -89,6 +90,7 @@ export function createBaseCrudResolver<
         async getOne(
             @Arg('id')
             id: string,
+            @Ctx() context:any
         ) {
             let where:ObjectLiteral={}
             where[this.primaryKey]=id
@@ -104,6 +106,7 @@ export function createBaseCrudResolver<
         async getMany(
             @Arg('ids', type => [Int])
             ids: number[],
+            @Ctx() context:any
         ) {
             let where:ObjectLiteral={}
             where[this.primaryKey]=In(ids)
@@ -119,6 +122,7 @@ export function createBaseCrudResolver<
         async getManyReference(
             @Arg('params', type => GQLReactAdminGetManyReferenceParams)
             params: GQLReactAdminGetManyReferenceParams,
+            @Ctx() context:any
         ) {
             let query = createQueryBuilder(ORMEntity, 'entity').where(
                 `entity.${params.target}=:id`,
@@ -148,6 +152,7 @@ export function createBaseCrudResolver<
             id: number,
             @Arg('data', type => inputTypeCls)
             data: T2,
+            @Ctx() context:any
         ) {
             let where:ObjectLiteral={}
             where[this.primaryKey]=id
@@ -170,6 +175,7 @@ export function createBaseCrudResolver<
             ids: number[],
             @Arg('data', type => inputTypeCls)
             data: T2,
+            @Ctx() context:any
         ) {
             let list = await createQueryBuilder(ORMEntity, entityAlias)
                 .whereInIds(ids)
@@ -184,7 +190,7 @@ export function createBaseCrudResolver<
         //CREATE
         @Authorized('admin')
         @Mutation(type => objectTypeCls, { name: `admin${suffix}Create` })
-        async create(@Arg('data', type => inputTypeCls) data: T2) {
+        async create(@Arg('data', type => inputTypeCls) data: T2, @Ctx() context:any) {
             // @ts-ignore
             let entity = ORMEntity.create()
             await EntityUpdateHelper.update(entity, data,updateHelperOptions)
@@ -197,6 +203,7 @@ export function createBaseCrudResolver<
         async delete(
             @Arg('id', type => Int)
             id: number,
+            @Ctx() context:any
         ) {
             // @ts-ignore
             let entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
@@ -209,9 +216,10 @@ export function createBaseCrudResolver<
         async deleteMany(
             @Arg('ids', type => [Int])
             ids: number[],
+            @Ctx() context:any
         ) {
-            let errors = []
-            let removedIds = []
+            let errors:any[] = []
+            let removedIds:any[] = []
             for (let id of ids) {
                 try {
                     // @ts-ignore
@@ -235,6 +243,7 @@ export function createBaseCrudResolver<
             qb: SelectQueryBuilder<any>,
             params: GQLReactAdminListParams,
             metadata: EntityMetadata,
+            context:any
         ) {
             if (params.filter) {
                 let columnNames = metadata.columns.map(c => c.propertyName)
@@ -286,7 +295,7 @@ export async function validateEntityRelations<ORM extends BaseEntity>(
     primaryKey:string
 ): Promise<ORM> {
     const metadata = entityClass.getRepository().metadata
-    let errors = []
+    let errors:any[] = []
     let rQuery = await createQueryBuilder(entityClass, 'entity').where(
         `entity.${primaryKey}=:id`,
         { id },

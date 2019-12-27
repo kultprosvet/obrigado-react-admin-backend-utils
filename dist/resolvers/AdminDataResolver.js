@@ -23,7 +23,7 @@ const bcrypt = require("bcrypt");
 const RoleConfig_1 = require("../roles/RoleConfig");
 const AdminDataBaseResolver = BaseAdminResourceResolver_1.createBaseCrudResolver(GQLAdministrator_1.GQLAdministrator, GQLAdministratorInput_1.GQLAdministratorInput, Administrator_1.Administrator);
 let AdminDataResolver = class AdminDataResolver extends AdminDataBaseResolver {
-    async update(id, data) {
+    async update1(id, data, context) {
         // @ts-ignore
         let entity = await Administrator_1.Administrator.findOne({ where: { id } });
         if (!entity)
@@ -34,7 +34,7 @@ let AdminDataResolver = class AdminDataResolver extends AdminDataBaseResolver {
         await entity.save();
         return entity;
     }
-    async create(data) {
+    async create(data, context) {
         // @ts-ignore
         let entity = new Administrator_1.Administrator();
         await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, { ignore: ['password'] });
@@ -58,16 +58,17 @@ __decorate([
     type_graphql_1.Mutation(type => GQLAdministrator_1.GQLAdministrator, { name: `adminAdministratorUpdate` }),
     __param(0, type_graphql_1.Arg('id', type => type_graphql_1.Int)),
     __param(1, type_graphql_1.Arg('data', type => GQLAdministratorInput_1.GQLAdministratorInput)),
+    __param(2, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, GQLAdministratorInput_1.GQLAdministratorInput]),
+    __metadata("design:paramtypes", [Number, GQLAdministratorInput_1.GQLAdministratorInput, Object]),
     __metadata("design:returntype", Promise)
-], AdminDataResolver.prototype, "update", null);
+], AdminDataResolver.prototype, "update1", null);
 __decorate([
     type_graphql_1.Authorized('admin'),
     type_graphql_1.Mutation(type => GQLAdministrator_1.GQLAdministrator, { name: `adminAdministratorCreate` }),
-    __param(0, type_graphql_1.Arg('data', type => GQLAdministratorInput_1.GQLAdministratorInput)),
+    __param(0, type_graphql_1.Arg('data', type => GQLAdministratorInput_1.GQLAdministratorInput)), __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [GQLAdministratorInput_1.GQLAdministratorInput]),
+    __metadata("design:paramtypes", [GQLAdministratorInput_1.GQLAdministratorInput, Object]),
     __metadata("design:returntype", Promise)
 ], AdminDataResolver.prototype, "create", null);
 __decorate([

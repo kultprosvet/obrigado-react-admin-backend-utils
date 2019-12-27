@@ -39,13 +39,13 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
     ], OutList);
     let BaseResolver = class BaseResolver extends ReactAdminDataProvider_1.ReactAdminDataProvider {
         // GET LIST
-        async getList(params) {
+        async getList(params, context) {
             //@ts-ignore
             const metadata = ORMEntity.getRepository()
                 .metadata;
             let query = typeorm_1.createQueryBuilder(ORMEntity, entityAlias);
             if (params.filter) {
-                this.applyFilterToQuery(query, params, metadata);
+                this.applyFilterToQuery(query, params, metadata, context);
             }
             this.alterGetListQuery(query, params);
             let total = await query.getCount();
@@ -65,21 +65,21 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             return { data: data || [], total };
         }
         // GET ONE
-        async getOne(id) {
+        async getOne(id, context) {
             let where = {};
             where[this.primaryKey] = id;
             // @ts-ignore
             return await ORMEntity.findOne({ where });
         }
         // GET_MANY
-        async getMany(ids) {
+        async getMany(ids, context) {
             let where = {};
             where[this.primaryKey] = typeorm_1.In(ids);
             // @ts-ignore
             return await ORMEntity.find({ where });
         }
         // GET_MANY_REFERENCE
-        async getManyReference(params) {
+        async getManyReference(params, context) {
             let query = typeorm_1.createQueryBuilder(ORMEntity, 'entity').where(`entity.${params.target}=:id`, { id: params.id });
             let total = await query.getCount();
             if (params.pagination) {
@@ -95,7 +95,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             return await { total, data: await query.getMany() };
         }
         // UPDATE
-        async update(id, data) {
+        async update(id, data, context) {
             let where = {};
             where[this.primaryKey] = id;
             // @ts-ignore
@@ -107,7 +107,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             return entity;
         }
         //UPDATE_MANY
-        async updateMany(ids, data) {
+        async updateMany(ids, data, context) {
             let list = await typeorm_1.createQueryBuilder(ORMEntity, entityAlias)
                 .whereInIds(ids)
                 .getMany();
@@ -118,7 +118,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             return { ids };
         }
         //CREATE
-        async create(data) {
+        async create(data, context) {
             // @ts-ignore
             let entity = ORMEntity.create();
             await EntityUpdateHelper_1.EntityUpdateHelper.update(entity, data, updateHelperOptions);
@@ -126,14 +126,14 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             return entity;
         }
         // DELETE
-        async delete(id) {
+        async delete(id, context) {
             // @ts-ignore
             let entity = await validateEntityRelations(ORMEntity, id, this.primaryKey);
             await entity.remove();
             return entity;
         }
         // DELETE_MANY
-        async deleteMany(ids) {
+        async deleteMany(ids, context) {
             let errors = [];
             let removedIds = [];
             for (let id of ids) {
@@ -153,7 +153,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             return { ids: removedIds };
         }
         alterGetListQuery(qb, params) { }
-        applyFilterToQuery(qb, params, metadata) {
+        applyFilterToQuery(qb, params, metadata, context) {
             if (params.filter) {
                 let columnNames = metadata.columns.map(c => c.propertyName);
                 for (let f of params.filter) {
@@ -191,16 +191,18 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             name: `admin${suffix}List`,
         }),
         __param(0, type_graphql_1.Arg('params', type => GQLReactAdminListParams_1.GQLReactAdminListParams)),
+        __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [GQLReactAdminListParams_1.GQLReactAdminListParams]),
+        __metadata("design:paramtypes", [GQLReactAdminListParams_1.GQLReactAdminListParams, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "getList", null);
     __decorate([
         type_graphql_1.Authorized('admin'),
         type_graphql_1.Query(type => objectTypeCls, { name: `admin${suffix}GetOne` }),
         __param(0, type_graphql_1.Arg('id')),
+        __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [String]),
+        __metadata("design:paramtypes", [String, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "getOne", null);
     __decorate([
@@ -210,8 +212,9 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             nullable: true,
         }),
         __param(0, type_graphql_1.Arg('ids', type => [type_graphql_1.Int])),
+        __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Array]),
+        __metadata("design:paramtypes", [Array, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "getMany", null);
     __decorate([
@@ -221,8 +224,9 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
             nullable: true,
         }),
         __param(0, type_graphql_1.Arg('params', type => GQLReactAdminGetManyReferenceParams_1.GQLReactAdminGetManyReferenceParams)),
+        __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [GQLReactAdminGetManyReferenceParams_1.GQLReactAdminGetManyReferenceParams]),
+        __metadata("design:paramtypes", [GQLReactAdminGetManyReferenceParams_1.GQLReactAdminGetManyReferenceParams, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "getManyReference", null);
     __decorate([
@@ -230,8 +234,9 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         type_graphql_1.Mutation(type => objectTypeCls, { name: `admin${suffix}Update` }),
         __param(0, type_graphql_1.Arg('id', type => type_graphql_1.Int)),
         __param(1, type_graphql_1.Arg('data', type => inputTypeCls)),
+        __param(2, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number, Object]),
+        __metadata("design:paramtypes", [Number, Object, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "update", null);
     __decorate([
@@ -239,32 +244,35 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         type_graphql_1.Mutation(type => IdsList_1.IdsList, { name: `admin${suffix}UpdateMany` }),
         __param(0, type_graphql_1.Arg('ids', type => [type_graphql_1.Int])),
         __param(1, type_graphql_1.Arg('data', type => inputTypeCls)),
+        __param(2, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Array, Object]),
+        __metadata("design:paramtypes", [Array, Object, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "updateMany", null);
     __decorate([
         type_graphql_1.Authorized('admin'),
         type_graphql_1.Mutation(type => objectTypeCls, { name: `admin${suffix}Create` }),
-        __param(0, type_graphql_1.Arg('data', type => inputTypeCls)),
+        __param(0, type_graphql_1.Arg('data', type => inputTypeCls)), __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object]),
+        __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "create", null);
     __decorate([
         type_graphql_1.Authorized('admin'),
         type_graphql_1.Mutation(type => objectTypeCls, { name: `admin${suffix}Delete` }),
         __param(0, type_graphql_1.Arg('id', type => type_graphql_1.Int)),
+        __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number]),
+        __metadata("design:paramtypes", [Number, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "delete", null);
     __decorate([
         type_graphql_1.Authorized('admin'),
         type_graphql_1.Mutation(type => IdsList_1.IdsList, { name: `admin${suffix}DeleteMany` }),
         __param(0, type_graphql_1.Arg('ids', type => [type_graphql_1.Int])),
+        __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Array]),
+        __metadata("design:paramtypes", [Array, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "deleteMany", null);
     BaseResolver = __decorate([

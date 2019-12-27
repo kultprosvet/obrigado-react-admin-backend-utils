@@ -22,7 +22,7 @@
     "declaration": true,
     "moduleResolution": "node",
     "removeComments": false,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "noImplicitThis": true,

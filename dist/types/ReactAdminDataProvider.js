@@ -1,16 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class ReactAdminDataProvider {
-    async getList(params) { return null; }
-    async getOne(id) { return null; }
-    async getMany(ids) { return null; }
-    async getManyReference(params) { return null; }
-    async update(id, data) { return null; }
-    async updateMany(ids, data) { return null; }
-    async create(data) { return null; }
-    async delete(id) { return null; }
-    async deleteMany(ids) { return null; }
-    alterGetListQuery(qb, params) { return; }
+    async getList(params, context) {
+        return null;
+    }
+    async getOne(id, context) {
+        return null;
+    }
+    async getMany(ids, context) {
+        return null;
+    }
+    async getManyReference(params, context) {
+        return null;
+    }
+    async update(id, data, context) {
+        return null;
+    }
+    async updateMany(ids, data, context) {
+        return null;
+    }
+    async create(data, context) {
+        return null;
+    }
+    async delete(id, context) {
+        return null;
+    }
+    async deleteMany(ids, context) {
+        return null;
+    }
+    alterGetListQuery(qb, params) {
+        return;
+    }
+    applyFilterToQuery(qb, params, metadata, context) {
+    }
 }
 exports.ReactAdminDataProvider = ReactAdminDataProvider;
 //# sourceMappingURL=ReactAdminDataProvider.js.map
