@@ -32,8 +32,12 @@ __decorate([
     type_graphql_1.Field({ nullable: true }),
     __metadata("design:type", String)
 ], GQLAdministratorInput.prototype, "role", void 0);
+__decorate([
+    type_graphql_1.Field({ defaultValue: 0 }),
+    __metadata("design:type", Boolean)
+], GQLAdministratorInput.prototype, "isBlocked", void 0);
 GQLAdministratorInput = __decorate([
-    type_graphql_1.InputType('AdministratorInput')
+    type_graphql_1.InputType("AdministratorInput")
 ], GQLAdministratorInput);
 exports.GQLAdministratorInput = GQLAdministratorInput;
 //# sourceMappingURL=GQLAdministratorInput.js.map

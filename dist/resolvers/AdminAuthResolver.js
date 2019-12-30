@@ -29,6 +29,9 @@ class AdminAuthResolver {
         if (!bcrypt.compareSync(password, user.password)) {
             throw new apollo_server_errors_1.ApolloError('Wrong email or password', 'WRONG_CREDENTIALS');
         }
+        if (user.isBlocked) {
+            throw new apollo_server_errors_1.ApolloError('Your account has been blocked', 'BLOCKED_ADMIN');
+        }
         let secret = process.env['APP_SECRET'];
         if (!secret) {
             throw new apollo_server_errors_1.ApolloError('Please set env APP_SECRET');

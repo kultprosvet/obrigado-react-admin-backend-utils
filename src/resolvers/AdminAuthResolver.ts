@@ -23,6 +23,14 @@ export class AdminAuthResolver{
                 'WRONG_CREDENTIALS'
             )
         }
+
+        if (user.isBlocked) {
+            throw new ApolloError(
+                'Your account has been blocked',
+                'BLOCKED_ADMIN'
+            )
+        }
+
         let secret = process.env['APP_SECRET']
         if (!secret) {
             throw new ApolloError('Please set env APP_SECRET')

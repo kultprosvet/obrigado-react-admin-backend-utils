@@ -2,6 +2,6 @@
   "extends": [ "tslint-plugin-prettier","tslint-config-prettier"],
   "rules": {
     "prettier": true,
-    "no-unused-variable": [true,{"ignore-pattern": "^_"}],
+    "no-unused-variable": [true,{"ignore-pattern": "^_"}]
   }
 }

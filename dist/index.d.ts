@@ -15,3 +15,4 @@ export * from './types/GQLReactAdminPagination';
 export * from './types/GQLReactAdminSort';
 export * from './types/GQLFileInput';
 export * from './types/FileHandler';
+export * from './roles/RoleConfig';
