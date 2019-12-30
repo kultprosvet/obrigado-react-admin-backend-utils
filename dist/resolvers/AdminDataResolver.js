@@ -23,7 +23,7 @@ const bcrypt = require("bcrypt");
 const RoleConfig_1 = require("../roles/RoleConfig");
 const AdminDataBaseResolver = BaseAdminResourceResolver_1.createBaseCrudResolver(GQLAdministrator_1.GQLAdministrator, GQLAdministratorInput_1.GQLAdministratorInput, Administrator_1.Administrator);
 let AdminDataResolver = class AdminDataResolver extends AdminDataBaseResolver {
-    async update1(id, data, context) {
+    async update(id, data, context) {
         // @ts-ignore
         let entity = await Administrator_1.Administrator.findOne({ where: { id } });
         if (!entity)
@@ -62,7 +62,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, GQLAdministratorInput_1.GQLAdministratorInput, Object]),
     __metadata("design:returntype", Promise)
-], AdminDataResolver.prototype, "update1", null);
+], AdminDataResolver.prototype, "update", null);
 __decorate([
     type_graphql_1.Authorized('admin'),
     type_graphql_1.Mutation(type => GQLAdministrator_1.GQLAdministrator, { name: `adminAdministratorCreate` }),

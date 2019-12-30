@@ -12,5 +12,5 @@ export declare abstract class ReactAdminDataProvider<OrmClass, GQLInput> {
     delete(id: number, context?: any): Promise<any>;
     deleteMany(ids: number[], context?: any): Promise<any>;
     alterGetListQuery(qb: SelectQueryBuilder<any>, params: GQLReactAdminListParams): void;
-    applyFilterToQuery(qb: SelectQueryBuilder<OrmClass>, params: GQLReactAdminListParams, metadata: EntityMetadata, context: any): void;
+    applyFilterToQuery<OrmClass>(qb: SelectQueryBuilder<OrmClass>, params: GQLReactAdminListParams, metadata: EntityMetadata, context: any): void;
 }
