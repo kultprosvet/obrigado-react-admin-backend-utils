@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const roles = [
-    { name: 'admin', permissions: ['create administrators'] },
-    { name: 'moderator', permissions: ['edit something'] },
-    { name: 'user', permissions: ['view something'] }
-];
+const roles = [{ name: 'admin', permissions: ['block administrators'] }];
 exports.RoleConfig = {
     init(r) {
         for (const item of r) {
+            if (item.name === 'admin') {
+                roles[0].permissions = roles[0].permissions.concat(item.permissions);
+                continue;
+            }
             roles.push(item);
         }
     },
