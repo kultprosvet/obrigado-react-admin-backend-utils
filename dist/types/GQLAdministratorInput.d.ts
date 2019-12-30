@@ -4,4 +4,5 @@ export declare class GQLAdministratorInput {
     first_name: string;
     password: string;
     role: string;
+    isBlocked: boolean;
 }

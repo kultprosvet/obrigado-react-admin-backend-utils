@@ -37,6 +37,10 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], Administrator.prototype, "role", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Boolean)
+], Administrator.prototype, "isBlocked", void 0);
 Administrator = __decorate([
     typeorm_1.Entity('administrators'),
     typeorm_1.Index('IDX_FULL_TEXT', ["username", "first_name", "last_name"], { fulltext: true })

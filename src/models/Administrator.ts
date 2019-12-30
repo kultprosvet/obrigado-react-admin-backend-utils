@@ -17,6 +17,9 @@ export class Administrator extends BaseEntity{
     @Column()
     role:string
 
+    @Column()
+    isBlocked: boolean
+
     token:string
 
 

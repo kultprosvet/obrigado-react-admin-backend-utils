@@ -2,14 +2,14 @@ type Role={
     name:string,
     permissions:Array<string>
 }
-const roles:Array<Role>=[
-    {name: 'admin', permissions: ['create administrators']},
-    {name: 'moderator', permissions: ['edit something']},
-    {name: 'user', permissions: ['view something']}
-    ]
+const roles:Array<Role>=[{name: 'admin', permissions: ['block administrators']}]
 export const RoleConfig={
     init(r:Array<Role>){
-        for(const item of r){
+        for(const item of r) {
+            if (item.name === 'admin') {
+                roles[0].permissions=roles[0].permissions.concat(item.permissions);
+                continue;
+            }
             roles.push(item)
         }
     },

@@ -5,4 +5,5 @@ export declare class GQLAdministrator {
     first_name: string;
     token: string;
     permissions: string[];
+    isBlocked: boolean;
 }

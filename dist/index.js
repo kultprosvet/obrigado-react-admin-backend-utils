@@ -19,4 +19,5 @@ __export(require("./types/GQLReactAdminGetManyReferenceParams"));
 __export(require("./types/GQLReactAdminPagination"));
 __export(require("./types/GQLReactAdminSort"));
 __export(require("./types/GQLFileInput"));
+__export(require("./roles/RoleConfig"));
 //# sourceMappingURL=index.js.map
