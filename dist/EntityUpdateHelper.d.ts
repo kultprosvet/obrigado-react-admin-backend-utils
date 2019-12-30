@@ -1,4 +1,4 @@
-import { BaseEntity, EntityMetadata } from 'typeorm';
+import { BaseEntity, EntityMetadata, ObjectLiteral } from 'typeorm';
 import { RelationMetadata } from 'typeorm/metadata/RelationMetadata';
 import { FileHandler } from "./types/FileHandler";
 export declare type EntityUpdateHelperOptions = {
@@ -23,7 +23,7 @@ export declare class EntityUpdateHelper<ORM> {
     updateRelationsEntities(field: string, value: any[]): Promise<void>;
     updateRelatedEntity(field: string, value: any): Promise<void>;
     setEntityRelationValue(field: string, value: any): void;
-    arrayToObject(data: Array<any>, key?: string): any;
+    arrayToObject(data: Array<any>, key?: string): ObjectLiteral;
     getFieldName(f: string): string;
-    getRelation(fieldName: string): any;
+    getRelation(fieldName: string): RelationMetadata;
 }

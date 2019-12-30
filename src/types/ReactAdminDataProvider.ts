@@ -50,7 +50,7 @@ export  abstract class ReactAdminDataProvider<OrmClass,GQLInput> {
         return
     }
 
-   applyFilterToQuery(
+   applyFilterToQuery<OrmClass>(
         qb: SelectQueryBuilder<OrmClass>,
         params: GQLReactAdminListParams,
         metadata: EntityMetadata,

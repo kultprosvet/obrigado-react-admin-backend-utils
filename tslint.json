@@ -3,5 +3,6 @@
   "rules": {
     "prettier": true,
     "no-unused-variable": [true,{"ignore-pattern": "^_"}],
+
   }
 }
