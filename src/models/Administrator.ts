@@ -14,7 +14,7 @@ export class Administrator extends BaseEntity{
     @Column({nullable:true})
     last_name:string
 
-    @Column()
+    @Column({nullable:true})
     role:string
 
     @Column()
