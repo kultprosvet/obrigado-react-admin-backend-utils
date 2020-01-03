@@ -17,7 +17,7 @@ export class Administrator extends BaseEntity{
     @Column({nullable:true})
     role:string
 
-    @Column()
+    @Column({type:'tinyint',default:0})
     isBlocked: boolean
 
     token:string
