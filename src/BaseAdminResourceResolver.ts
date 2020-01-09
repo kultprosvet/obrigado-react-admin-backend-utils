@@ -206,8 +206,11 @@ export function createBaseCrudResolver<
             @Ctx() context:any
         ) {
             // @ts-ignore
-            let entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
-            await entity.remove()
+            const entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
+            entity.remove()
+                .catch(e => {
+                    throw new ApolloError(e, 'DELETION_FAILED')
+                })
             return entity
         }
         // DELETE_MANY

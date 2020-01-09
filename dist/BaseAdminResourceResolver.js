@@ -128,8 +128,11 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         // DELETE
         async delete(id, context) {
             // @ts-ignore
-            let entity = await validateEntityRelations(ORMEntity, id, this.primaryKey);
-            await entity.remove();
+            const entity = await validateEntityRelations(ORMEntity, id, this.primaryKey);
+            entity.remove()
+                .catch(e => {
+                throw new apollo_server_errors_1.ApolloError(e, 'DELETION_FAILED');
+            });
             return entity;
         }
         // DELETE_MANY
@@ -236,7 +239,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         __param(1, type_graphql_1.Arg('data', type => inputTypeCls)),
         __param(2, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Number, Boolean, Object]),
+        __metadata("design:paramtypes", [Number, Object, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "update", null);
     __decorate([
@@ -246,7 +249,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         __param(1, type_graphql_1.Arg('data', type => inputTypeCls)),
         __param(2, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Array, Boolean, Object]),
+        __metadata("design:paramtypes", [Array, Object, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "updateMany", null);
     __decorate([
@@ -254,7 +257,7 @@ function createBaseCrudResolver(objectTypeCls, inputTypeCls, ORMEntity, updateHe
         type_graphql_1.Mutation(type => objectTypeCls, { name: `admin${suffix}Create` }),
         __param(0, type_graphql_1.Arg('data', type => inputTypeCls)), __param(1, type_graphql_1.Ctx()),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Boolean, Object]),
+        __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
     ], BaseResolver.prototype, "create", null);
     __decorate([
