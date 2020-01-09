@@ -8,6 +8,7 @@ type TokenInfo = {
     type: string
 }
 export const getAdministratorData = (req: any) => {
+    if (!req) return {administrator:null}
     try {
         let user: { [key: string]: any } | null
         user = null
