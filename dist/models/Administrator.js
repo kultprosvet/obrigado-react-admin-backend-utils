@@ -34,11 +34,11 @@ __decorate([
     __metadata("design:type", String)
 ], Administrator.prototype, "last_name", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", String)
 ], Administrator.prototype, "role", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: 'tinyint', default: 0 }),
     __metadata("design:type", Boolean)
 ], Administrator.prototype, "isBlocked", void 0);
 Administrator = __decorate([
