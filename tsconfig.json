@@ -5,7 +5,7 @@
       "./@types"
     ],
     "baseUrl": ".",
-    "target": "ESNext",
+    "target": "ES2016",
     "module": "commonjs",
     "jsx": "preserve",
     "skipLibCheck": true,
