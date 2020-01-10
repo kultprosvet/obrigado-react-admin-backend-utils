@@ -270,12 +270,21 @@ export function createBaseCrudResolver<
                                 }
                             }
                         }
+
+                        let searchValue = f.value
+                        const specialCharacters = ['+', '*', '@', '%', '-', '(', ')', '"']
+                        specialCharacters.forEach(char  => {
+                            searchValue = searchValue.replace(char, '')
+                        })
+
+                        searchValue.length === 0 ? searchValue : searchValue = `${searchValue}*`
+
                         if (ftColumnNames.length > 0)
                             qb.andWhere(
                                 `match(${ftColumnNames.join(
                                     ',',
                                 )}) against (:ftQuery IN BOOLEAN MODE)`,
-                                { ftQuery: `${f.value}*` },
+                                { ftQuery: searchValue },
                             )
                     }
                 }
