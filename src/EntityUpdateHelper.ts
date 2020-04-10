@@ -1,5 +1,4 @@
 import {
-    BaseEntity,
     createQueryBuilder,
     EntityMetadata, getRepository,
     ObjectLiteral,
@@ -10,6 +9,7 @@ import { isObject } from './utils/isObject'
 import { ApolloError } from 'apollo-server-errors'
 import {GQLFileInput} from "./types/GQLFileInput";
 import {FileHandler} from "./types/FileHandler";
+import {ClassType} from "type-graphql"
 export type EntityUpdateHelperOptions={
     ignore: Array<string>,
     fileHandler?:FileHandler
@@ -23,7 +23,7 @@ export class EntityUpdateHelper<ORM> {
         [key: string]: RelationMetadata
     }
     metadata: EntityMetadata
-    static async update<ORM extends BaseEntity>(
+    static async update<ORM extends ClassType>(
         entity: ORM,
         data: any,
         options?:Partial<EntityUpdateHelperOptions>,

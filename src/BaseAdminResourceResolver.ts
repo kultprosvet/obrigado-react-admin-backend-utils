@@ -95,7 +95,7 @@ export function createBaseCrudResolver<
             let where:ObjectLiteral={}
             where[this.primaryKey]=id
             // @ts-ignore
-            return await ORMEntity.findOne({ where })
+            return await getRepository(ORMEntity).findOne({ where })
         }
         // GET_MANY
         @Authorized('admin')
@@ -111,7 +111,7 @@ export function createBaseCrudResolver<
             let where:ObjectLiteral={}
             where[this.primaryKey]=In(ids)
             // @ts-ignore
-            return await ORMEntity.find({where})
+            return await getRepository(ORMEntity).find({where})
         }
         // GET_MANY_REFERENCE
         @Authorized('admin')
@@ -147,24 +147,27 @@ export function createBaseCrudResolver<
         // UPDATE
         @Authorized('admin')
         @Mutation(type => objectTypeCls, { name: `admin${suffix}Update` })
-        async update(
+        async updateMutation(
             @Arg('id', type => Int)
             id: number,
             @Arg('data', type => inputTypeCls)
             data: T2,
             @Ctx() context:any
         ) {
+            return await this.update(id,data,context)
+        }
+        async update(id: number, data: T2, context:any) {
             let where:ObjectLiteral={}
             where[this.primaryKey]=id
             // @ts-ignore
-            let entity = await ORMEntity.findOne({ where })
+            let entity = await getRepository(ORMEntity).findOne({ where })
             if (!entity)
                 throw new ApolloError(
                     'Entity not found for id ' + id,
                     'NOT_FOUND',
                 )
             await EntityUpdateHelper.update(entity, data,updateHelperOptions)
-            await entity.save()
+            await getRepository(ORMEntity).save(entity)
             return entity
         }
         //UPDATE_MANY
@@ -182,7 +185,7 @@ export function createBaseCrudResolver<
                 .getMany()
             for (let entity of list) {
                 await EntityUpdateHelper.update(entity, data,updateHelperOptions)
-                await entity.save()
+                await getRepository(ORMEntity).save(entity)
             }
 
             return { ids }
@@ -190,11 +193,14 @@ export function createBaseCrudResolver<
         //CREATE
         @Authorized('admin')
         @Mutation(type => objectTypeCls, { name: `admin${suffix}Create` })
-        async create(@Arg('data', type => inputTypeCls) data: T2, @Ctx() context:any) {
+        async createMutation(@Arg('data', type => inputTypeCls) data: T2, @Ctx() context:any) {
+           return await this.create(data,context)
+        }
+        async create( data: T2, context:any) {
             // @ts-ignore
             let entity = ORMEntity.create()
             await EntityUpdateHelper.update(entity, data,updateHelperOptions)
-            await entity.save()
+            await getRepository(ORMEntity).save(entity)
             return entity
         }
         // DELETE
@@ -207,10 +213,8 @@ export function createBaseCrudResolver<
         ) {
             // @ts-ignore
             const entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
-            entity.remove()
-                .catch(e => {
-                    throw new ApolloError(e, 'DELETION_FAILED')
-                })
+            await getRepository(ORMEntity).remove(entity)
+
             return entity
         }
         // DELETE_MANY
@@ -227,7 +231,7 @@ export function createBaseCrudResolver<
                 try {
                     // @ts-ignore
                     let entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
-                    await entity.remove()
+                    await getRepository(ORMEntity).remove(entity)
                     removedIds.push(id)
                 } catch (e) {
                     errors.push(e.message)

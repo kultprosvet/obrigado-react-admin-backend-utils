@@ -1,6 +1,6 @@
 {
   "name": "obrigado-react-admin-backend-utils",
-  "version": "1.1.29",
+  "version": "1.2.0",
   "description": "Helper utilities for react-admin graphql backend.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -45,6 +45,6 @@
     "tslint": "5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.7.4"
+    "typescript": "^3.8.3"
   }
 }

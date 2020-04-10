@@ -3,6 +3,8 @@ import {GQLReactAdminGetManyReferenceParams} from "./GQLReactAdminGetManyReferen
 
 import {EntityMetadata, SelectQueryBuilder} from "typeorm";
 
+
+
 export  abstract class ReactAdminDataProvider<OrmClass,GQLInput> {
     async getList(
         params: GQLReactAdminListParams,
@@ -60,3 +62,4 @@ export  abstract class ReactAdminDataProvider<OrmClass,GQLInput> {
    }
 
 }
+
