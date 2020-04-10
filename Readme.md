@@ -181,11 +181,13 @@ By default admin is authorized by JWT token that is saved in cookies.
 You can define roles and permissions in RoleConfig. Pass an array of objects containing roles and arrays with permissions to initialize it. 
 
 ```javascript
+import {RoleConfig} from 'obrigado-react-admin-backend-utils'
 const roles:Array<Role>=[
     {name: 'admin', permissions: ['create administrators', 'edit administrators']},
     {name: 'moderator', permissions: ['edit something']},
     {name: 'user', permissions: ['view something']}
     ]
+RoleConfig.init(roles)    
 ```
 
 If the admin's role is not specified RoleConfig will assign them the first role of the array ("amdin" role by default).
