@@ -23,7 +23,7 @@ export class EntityUpdateHelper<ORM> {
         [key: string]: RelationMetadata
     }
     metadata: EntityMetadata
-    static async update<ORM extends ClassType>(
+    static async update<ORM>(
         entity: ORM,
         data: any,
         options?:Partial<EntityUpdateHelperOptions>,
@@ -31,6 +31,7 @@ export class EntityUpdateHelper<ORM> {
         const defaultOptions={ ignore: []  }
         let helper = new EntityUpdateHelper()
         helper.entity = entity
+        //@ts-ignore
         helper.EntityClass = entity.constructor
         helper.data = data
         helper.options = Object.assign( defaultOptions,options || {})
