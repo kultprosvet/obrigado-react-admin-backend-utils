@@ -33,7 +33,8 @@
   },
   "peerDependencies": {
     "type-graphql": "0.17.x",
-    "typeorm": "0.2.x"
+    "typeorm": "0.2.x",
+    "graphql": "^14.x"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

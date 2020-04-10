@@ -1,7 +1,7 @@
 import {
     BaseEntity,
     createQueryBuilder,
-    EntityMetadata,
+    EntityMetadata, getRepository,
     ObjectLiteral,
 } from 'typeorm'
 
@@ -41,7 +41,7 @@ export class EntityUpdateHelper<ORM> {
     constructor() {}
     async _updateEntity(): Promise<void> {
         let { EntityClass, entity, data, options } = this
-        const metadata = EntityClass.getRepository().metadata
+        const metadata = getRepository(EntityClass).metadata
         this.metadata = metadata
         let relations: ObjectLiteral = {}
         //@ts-ignore
@@ -144,13 +144,13 @@ export class EntityUpdateHelper<ORM> {
         let newIds = ids.map((id: any) => parseInt(id))
         let currentIds = currentRelations.map(r => parseInt(r.id))
         // id to add
-        let idsToAdd = []
+        let idsToAdd:number[]= []
         for (let id of newIds) {
             if (!currentIds.includes(id)) {
                 idsToAdd.push(id)
             }
         }
-        let idsToRemove = []
+        let idsToRemove:number[]= []
         for (let id of currentIds) {
             if (!newIds.includes(id)) {
                 idsToRemove.push(id)
@@ -224,7 +224,7 @@ export class EntityUpdateHelper<ORM> {
         relatedEntities.filter(relatedEntity => {
             return newIds.includes(parseInt(relatedEntity.id))
         })
-        let idsToRemove = []
+        let idsToRemove:number[] = []
         for (let id of currentIds) {
             if (!newIds.includes(id)) {
                 idsToRemove.push(id)

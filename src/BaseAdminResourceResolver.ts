@@ -12,7 +12,7 @@ import {
 import {
     BaseEntity,
     createQueryBuilder,
-    EntityMetadata,
+    EntityMetadata, getRepository,
     In,
     ObjectLiteral,
     SelectQueryBuilder,
@@ -29,7 +29,7 @@ import {ReactAdminDataProvider} from "./types/ReactAdminDataProvider";
 export function createBaseCrudResolver<
     T extends ClassType,
     T2 extends ClassType,
-    O extends ClassType<BaseEntity>,
+    O extends ClassType,
 >(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):ClassType<ReactAdminDataProvider<O,T2>> {
 
     //@ts-ignore
@@ -55,9 +55,9 @@ export function createBaseCrudResolver<
             params: GQLReactAdminListParams,
             @Ctx() context:any
         ) {
-            //@ts-ignore
-            const metadata = ORMEntity.getRepository()
-                .metadata as EntityMetadata
+
+            const metadata =getRepository( ORMEntity)
+                .metadata
             let query = createQueryBuilder(ORMEntity, entityAlias)
             if (params.filter) {
                 this.applyFilterToQuery(query, params, metadata,context)
@@ -291,8 +291,8 @@ export function createBaseCrudResolver<
             }
         }
         get primaryKey(){
-            //@ts-ignore
-            const metadata = ORMEntity.getRepository()
+
+            const metadata = getRepository(ORMEntity)
                 .metadata as EntityMetadata
             return metadata.primaryColumns[0].databaseName
         }
@@ -306,7 +306,7 @@ export async function validateEntityRelations<ORM extends BaseEntity>(
     id: number,
     primaryKey:string
 ): Promise<ORM> {
-    const metadata = entityClass.getRepository().metadata
+    const metadata =getRepository(entityClass).metadata
     let errors:any[] = []
     let rQuery = await createQueryBuilder(entityClass, 'entity').where(
         `entity.${primaryKey}=:id`,
@@ -314,9 +314,8 @@ export async function validateEntityRelations<ORM extends BaseEntity>(
     )
     for (let r of metadata.relations) {
         if (
-            r.onDelete !== 'CASCADE' &&
-            !r.cascade &&
-            (Array.isArray(r.cascade) && !r.cascade.includes('remove'))
+            r.onDelete !== 'CASCADE' && !r.isCascadeRemove
+
         ) {
             rQuery.loadRelationCountAndMap(
                 `entity.${r.propertyName}_count`,
@@ -335,6 +334,7 @@ export async function validateEntityRelations<ORM extends BaseEntity>(
         ) {
             //@ts-ignore
             let count = dataCounts[`${r.propertyName}_count`]
+            //@ts-ignore
             errors.push(`${r.type.name} (${count})`)
         }
     }
