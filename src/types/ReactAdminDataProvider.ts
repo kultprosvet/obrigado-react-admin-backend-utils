@@ -5,7 +5,7 @@ import {EntityMetadata, SelectQueryBuilder} from "typeorm";
 
 
 
-export  abstract class ReactAdminDataProvider<OrmClass,GQLInput> {
+export  abstract class ReactAdminDataProvider<OrmClass,GQLInput,GQLInputUpdate> {
     async getList(
         params: GQLReactAdminListParams,
         context: any
@@ -25,11 +25,11 @@ export  abstract class ReactAdminDataProvider<OrmClass,GQLInput> {
         return null
     }
 
-    async update(id: number, data: GQLInput, context?: any): Promise<any> {
+    async update(id: number, data: GQLInputUpdate, context?: any): Promise<any> {
         return null
     }
 
-    async updateMany(ids: number[], data: GQLInput, context?: any): Promise<any> {
+    async updateMany(ids: number[], data: GQLInputUpdate, context?: any): Promise<any> {
         return null
     }
 

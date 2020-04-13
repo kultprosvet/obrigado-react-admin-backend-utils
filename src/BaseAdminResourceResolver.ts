@@ -12,10 +12,11 @@ import {
 import {
     BaseEntity,
     createQueryBuilder,
-    EntityMetadata, getRepository,
+    EntityMetadata, EntitySchema, getRepository,
     In,
     ObjectLiteral,
     SelectQueryBuilder,
+    ObjectType as TypeOrmObjectType
 } from 'typeorm'
 
 
@@ -25,40 +26,82 @@ import {GQLReactAdminListParams} from "./types/GQLReactAdminListParams";
 import {GQLReactAdminGetManyReferenceParams} from "./types/GQLReactAdminGetManyReferenceParams";
 import {IdsList} from "./types/IdsList";
 import {ReactAdminDataProvider} from "./types/ReactAdminDataProvider";
+import {ReturnTypeFuncValue} from "type-graphql/dist/decorators/types"
+/*
+import {GQLAdministrator} from "./types/GQLAdministrator"
+import {GQLAdministratorInput} from "./types/GQLAdministratorInput"
+import {Administrator} from "./models/Administrator"
+const ZZZ=createAdminResolver({
+    return:GQLAdministrator,
+    create:GQLAdministratorInput,
+    entity:Administrator
+})
+class XXX extends ZZZ {
+up
+}*/
+
+
+
 
 export function createBaseCrudResolver<
-    T extends ClassType,
-    T2 extends ClassType,
-    O extends ClassType,
->(objectTypeCls: T, inputTypeCls: T2, ORMEntity: O,updateHelperOptions?:Partial<EntityUpdateHelperOptions>):ClassType<ReactAdminDataProvider<O,T2>> {
+    ReturnType extends  ReturnTypeFuncValue,
+    CreateType extends ReturnTypeFuncValue ,
+    EntityType  extends TypeOrmObjectType<any> | EntitySchema<any>
+>(objectTypeCls: ClassType<ReturnType>, inputTypeCls: ClassType<CreateType>, ORMEntity: EntityType, updateHelperOptions?:Partial<EntityUpdateHelperOptions>):ClassType<ReactAdminDataProvider<ReturnType,CreateType,CreateType>> {
+return createAdminResolver({
+    create:inputTypeCls,
+    update:inputTypeCls,
+    return:objectTypeCls,
+    entity:ORMEntity,
+    updateHelperOptions
+})
+}
 
-    //@ts-ignore
-    const suffix = ORMEntity.name
+function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
+    CreateType extends ReturnTypeFuncValue,
+    UpdateType extends ReturnTypeFuncValue,
+    EntityType extends TypeOrmObjectType<any> | EntitySchema<any>>(config:{
+    return:ReturnType,
+    create:ClassType<CreateType>,
+    update: ClassType<UpdateType>,
+    entity:EntityType,
+    updateHelperOptions?:Partial<EntityUpdateHelperOptions>
+}): ClassType<ReactAdminDataProvider<EntityType,CreateType,UpdateType>>{
+
+
+    const ORMEntity=config.entity
+    const ReturnGQLClass=config.return
+    const inputTypeCls=config.create
+    const suffix =getRepository(ORMEntity).metadata.name
+    const updateHelperOptions=config.updateHelperOptions
     let entityAlias = suffix.toLowerCase()
     @ObjectType(`${suffix}List`)
     class OutList {
-        @Field(type => [objectTypeCls], { nullable: true })
+        @Field(type => [ReturnGQLClass], { nullable: true })
         data: any
         @Field(type => Int)
         total: number
     }
 
+
     @Resolver({ isAbstract: true })
-    class BaseResolver extends ReactAdminDataProvider<O,T2>{
+    class BaseResolver extends ReactAdminDataProvider<EntityType,CreateType,UpdateType>{
         @Authorized('admin')
         @Query(type => OutList, {
             name: `admin${suffix}List`,
         })
         // GET LIST
-        async getList(
+        async getListQuery(
             @Arg('params', type => GQLReactAdminListParams)
-            params: GQLReactAdminListParams,
+                params: GQLReactAdminListParams,
             @Ctx() context:any
         ) {
-
+            return this.getList(params,context)
+        }
+        async getList( params: GQLReactAdminListParams, @Ctx() context:any){
             const metadata =getRepository( ORMEntity)
                 .metadata
-            let query = createQueryBuilder(ORMEntity, entityAlias)
+            let query =getRepository( ORMEntity).createQueryBuilder( entityAlias)
             if (params.filter) {
                 this.applyFilterToQuery(query, params, metadata,context)
             }
@@ -69,7 +112,7 @@ export function createBaseCrudResolver<
                     .take(params.pagination.perPage)
                     .skip(
                         params.pagination.perPage *
-                            (params.pagination.page - 1),
+                        (params.pagination.page - 1),
                     )
             }
             if (params.sort) {
@@ -86,12 +129,16 @@ export function createBaseCrudResolver<
         }
         // GET ONE
         @Authorized('admin')
-        @Query(type => objectTypeCls, { name: `admin${suffix}GetOne` })
-        async getOne(
+        @Query(type => ReturnGQLClass, { name: `admin${suffix}GetOne` })
+        async getOneQuery(
             @Arg('id')
-            id: string,
+                id: string,
             @Ctx() context:any
         ) {
+            return this.getOne(id,context)
+        }
+        async getOne(id,context:any)
+        {
             let where:ObjectLiteral={}
             where[this.primaryKey]=id
             // @ts-ignore
@@ -99,15 +146,18 @@ export function createBaseCrudResolver<
         }
         // GET_MANY
         @Authorized('admin')
-        @Query(type => [objectTypeCls], {
+        @Query(type => [ReturnGQLClass], {
             name: `admin${suffix}GetMany`,
             nullable: true,
         })
-        async getMany(
+        async getManyQuery(
             @Arg('ids', type => [Int])
-            ids: number[],
+                ids: number[],
             @Ctx() context:any
-        ) {
+        ){
+            return this.getMany(ids,context)
+        }
+        async getMany( ids: number[],context:any){
             let where:ObjectLiteral={}
             where[this.primaryKey]=In(ids)
             // @ts-ignore
@@ -119,12 +169,15 @@ export function createBaseCrudResolver<
             name: `admin${suffix}GetManyReference`,
             nullable: true,
         })
-        async getManyReference(
+        async getManyReferenceQuery(
             @Arg('params', type => GQLReactAdminGetManyReferenceParams)
-            params: GQLReactAdminGetManyReferenceParams,
+                params: GQLReactAdminGetManyReferenceParams,
             @Ctx() context:any
         ) {
-            let query = createQueryBuilder(ORMEntity, 'entity').where(
+            return this.getManyReference(params,context)
+        }
+        async getManyReference(params: GQLReactAdminGetManyReferenceParams,context:any){
+            let query =getRepository(ORMEntity).createQueryBuilder('entity').where(
                 `entity.${params.target}=:id`,
                 {id:params.id},
             )
@@ -134,7 +187,7 @@ export function createBaseCrudResolver<
                     .take(params.pagination.perPage)
                     .skip(
                         params.pagination.perPage *
-                            (params.pagination.page - 1),
+                        (params.pagination.page - 1),
                     )
             }
             if (params.sort) {
@@ -146,17 +199,17 @@ export function createBaseCrudResolver<
         }
         // UPDATE
         @Authorized('admin')
-        @Mutation(type => objectTypeCls, { name: `admin${suffix}Update` })
+        @Mutation(type => ReturnGQLClass, { name: `admin${suffix}Update` })
         async updateMutation(
             @Arg('id', type => Int)
-            id: number,
+                id: number,
             @Arg('data', type => inputTypeCls)
-            data: T2,
+                data: UpdateType,
             @Ctx() context:any
         ) {
             return await this.update(id,data,context)
         }
-        async update(id: number, data: T2, context:any) {
+        async update(id: number, data: UpdateType, context:any) {
             let where:ObjectLiteral={}
             where[this.primaryKey]=id
             // @ts-ignore
@@ -173,14 +226,17 @@ export function createBaseCrudResolver<
         //UPDATE_MANY
         @Authorized('admin')
         @Mutation(type => IdsList, { name: `admin${suffix}UpdateMany` })
-        async updateMany(
+        async updateManyMutation(
             @Arg('ids', type => [Int])
-            ids: number[],
+                ids: number[],
             @Arg('data', type => inputTypeCls)
-            data: T2,
+                data: UpdateType,
             @Ctx() context:any
         ) {
-            let list = await createQueryBuilder(ORMEntity, entityAlias)
+            return this.updateMany(ids,data,context)
+        }
+        async updateMany( ids: number[],data: UpdateType,context:any){
+            let list = await getRepository(ORMEntity).createQueryBuilder( entityAlias)
                 .whereInIds(ids)
                 .getMany()
             for (let entity of list) {
@@ -192,27 +248,30 @@ export function createBaseCrudResolver<
         }
         //CREATE
         @Authorized('admin')
-        @Mutation(type => objectTypeCls, { name: `admin${suffix}Create` })
-        async createMutation(@Arg('data', type => inputTypeCls) data: T2, @Ctx() context:any) {
-           return await this.create(data,context)
+        @Mutation(type => ReturnGQLClass, { name: `admin${suffix}Create` })
+        async createMutation(@Arg('data', type => inputTypeCls) data: CreateType, @Ctx() context:any) {
+            return await this.create(data,context)
         }
-        async create( data: T2, context:any) {
-            // @ts-ignore
-            let entity = ORMEntity.create()
+        async create( data: CreateType, context:any) {
+            let entity = getRepository(ORMEntity).create()
             await EntityUpdateHelper.update(entity, data,updateHelperOptions)
             await getRepository(ORMEntity).save(entity)
             return entity
         }
         // DELETE
         @Authorized('admin')
-        @Mutation(type => objectTypeCls, { name: `admin${suffix}Delete` })
-        async delete(
+        @Mutation(type => ReturnGQLClass, { name: `admin${suffix}Delete` })
+        async deleteMutation(
             @Arg('id', type => Int)
-            id: number,
+                id: number,
             @Ctx() context:any
         ) {
+            return this.delete(id,context)
+        }
+        async delete(id:number,context:any){
             // @ts-ignore
             const entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
+            // @ts-ignore
             await getRepository(ORMEntity).remove(entity)
 
             return entity
@@ -220,17 +279,21 @@ export function createBaseCrudResolver<
         // DELETE_MANY
         @Authorized('admin')
         @Mutation(type => IdsList, { name: `admin${suffix}DeleteMany` })
-        async deleteMany(
+        async deleteManyMutation(
             @Arg('ids', type => [Int])
-            ids: number[],
+                ids: number[],
             @Ctx() context:any
         ) {
+            return this.deleteMany(ids,context)
+        }
+        async deleteMany( ids: number[],context:any){
             let errors:any[] = []
             let removedIds:any[] = []
             for (let id of ids) {
                 try {
                     // @ts-ignore
                     let entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
+                    //@ts-ignore
                     await getRepository(ORMEntity).remove(entity)
                     removedIds.push(id)
                 } catch (e) {
@@ -295,15 +358,14 @@ export function createBaseCrudResolver<
             }
         }
         get primaryKey(){
-
-            const metadata = getRepository(ORMEntity)
-                .metadata as EntityMetadata
+            const metadata = getRepository(ORMEntity).metadata
             return metadata.primaryColumns[0].databaseName
         }
     }
-
+//@ts-ignore
     return BaseResolver
 }
+
 
 export async function validateEntityRelations<ORM extends BaseEntity>(
     entityClass: any,
