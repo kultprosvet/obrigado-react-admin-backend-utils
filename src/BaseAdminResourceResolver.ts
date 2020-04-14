@@ -57,13 +57,13 @@ return createAdminResolver({
 })
 }
 
-function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
+export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
     CreateType extends ReturnTypeFuncValue,
     UpdateType extends ReturnTypeFuncValue,
     EntityType extends TypeOrmObjectType<any> | EntitySchema<any>>(config:{
     return:ReturnType,
     create:ClassType<CreateType>,
-    update: ClassType<UpdateType>,
+    update?: ClassType<UpdateType>,
     entity:EntityType,
     updateHelperOptions?:Partial<EntityUpdateHelperOptions>
 }): ClassType<ReactAdminDataProvider<EntityType,CreateType,UpdateType>>{
@@ -71,7 +71,8 @@ function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
 
     const ORMEntity=config.entity
     const ReturnGQLClass=config.return
-    const inputTypeCls=config.create
+    const CreateGQLClass=config.create
+    const UpdateGQLClass=config.update || config.create
     const suffix =getRepository(ORMEntity).metadata.name
     const updateHelperOptions=config.updateHelperOptions
     let entityAlias = suffix.toLowerCase()
@@ -203,7 +204,7 @@ function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
         async updateMutation(
             @Arg('id', type => Int)
                 id: number,
-            @Arg('data', type => inputTypeCls)
+            @Arg('data', type => UpdateGQLClass)
                 data: UpdateType,
             @Ctx() context:any
         ) {
@@ -212,7 +213,6 @@ function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
         async update(id: number, data: UpdateType, context:any) {
             let where:ObjectLiteral={}
             where[this.primaryKey]=id
-            // @ts-ignore
             let entity = await getRepository(ORMEntity).findOne({ where })
             if (!entity)
                 throw new ApolloError(
@@ -229,7 +229,7 @@ function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
         async updateManyMutation(
             @Arg('ids', type => [Int])
                 ids: number[],
-            @Arg('data', type => inputTypeCls)
+            @Arg('data', type => UpdateGQLClass)
                 data: UpdateType,
             @Ctx() context:any
         ) {
@@ -249,7 +249,7 @@ function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
         //CREATE
         @Authorized('admin')
         @Mutation(type => ReturnGQLClass, { name: `admin${suffix}Create` })
-        async createMutation(@Arg('data', type => inputTypeCls) data: CreateType, @Ctx() context:any) {
+        async createMutation(@Arg('data', type => CreateGQLClass) data: CreateType, @Ctx() context:any) {
             return await this.create(data,context)
         }
         async create( data: CreateType, context:any) {
