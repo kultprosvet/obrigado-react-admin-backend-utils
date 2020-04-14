@@ -27,6 +27,7 @@ import {GQLReactAdminGetManyReferenceParams} from "./types/GQLReactAdminGetManyR
 import {IdsList} from "./types/IdsList";
 import {ReactAdminDataProvider} from "./types/ReactAdminDataProvider";
 import {ReturnTypeFuncValue} from "type-graphql/dist/decorators/types"
+
 /*
 import {GQLAdministrator} from "./types/GQLAdministrator"
 import {GQLAdministratorInput} from "./types/GQLAdministratorInput"
@@ -73,7 +74,8 @@ export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
     const ReturnGQLClass=config.return
     const CreateGQLClass=config.create
     const UpdateGQLClass=config.update || config.create
-    const suffix =getRepository(ORMEntity).metadata.name
+    // @ts-ignore
+    const suffix =ORMEntity.name
     const updateHelperOptions=config.updateHelperOptions
     let entityAlias = suffix.toLowerCase()
     @ObjectType(`${suffix}List`)
@@ -271,10 +273,11 @@ export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
         async delete(id:number,context:any){
             // @ts-ignore
             const entity = await validateEntityRelations(ORMEntity, id,this.primaryKey)
+            let clonedEntity={...entity}
             // @ts-ignore
             await getRepository(ORMEntity).remove(entity)
 
-            return entity
+            return clonedEntity
         }
         // DELETE_MANY
         @Authorized('admin')
@@ -372,16 +375,17 @@ export async function validateEntityRelations<ORM extends BaseEntity>(
     id: number,
     primaryKey:string
 ): Promise<ORM> {
-    const metadata =getRepository(entityClass).metadata
+    const metadata =getRepository(entityClass).metadata as EntityMetadata
     let errors:any[] = []
     let rQuery = await createQueryBuilder(entityClass, 'entity').where(
         `entity.${primaryKey}=:id`,
         { id },
     )
+
     for (let r of metadata.relations) {
         if (
             r.onDelete !== 'CASCADE' && !r.isCascadeRemove
-
+            && !r.isManyToOne
         ) {
             rQuery.loadRelationCountAndMap(
                 `entity.${r.propertyName}_count`,
