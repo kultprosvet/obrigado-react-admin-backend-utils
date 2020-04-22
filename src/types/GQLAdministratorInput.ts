@@ -12,6 +12,8 @@ export class GQLAdministratorInput {
   password: string;
   @Field({ nullable: true })
   role: string;
+  @Field({ nullable: true })
+  email: string;
   @Field({ defaultValue: 0 })
   isBlocked: boolean;
 }

@@ -20,6 +20,9 @@ export class Administrator extends BaseEntity{
     @Column({type:'tinyint',default:0})
     isBlocked: boolean
 
+    @Column({nullable:true,type:'varchar',length:200})
+    email:string
+
     token:string
 
 

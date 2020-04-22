@@ -16,4 +16,6 @@ export class GQLAdministrator {
   permissions: string[];
   @Field()
   isBlocked: boolean;
+  @Field({ nullable: true })
+  email: string;
 }
