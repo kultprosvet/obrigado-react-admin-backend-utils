@@ -1,12 +1,13 @@
-type Role={
-    name:string,
+export type Role={
+    id:string,
+    name?:string,
     permissions:Array<string>
 }
-const roles:Array<Role>=[{name: 'admin', permissions: ['block administrators']}]
+const roles:Array<Role>=[{id: 'admin',name:"Admin", permissions: ['block administrators']}]
 export const RoleConfig={
     init(r:Array<Role>){
         for(const item of r) {
-            if (item.name === 'admin') {
+            if (item.id === 'admin') {
                 roles[0].permissions=roles[0].permissions.concat(item.permissions);
                 continue;
             }
@@ -26,20 +27,16 @@ export const RoleConfig={
     },
     getRole(role:string) {
         if (!role){
-            return roles[0].name;
+            return roles[0];
         }
         for(const item of roles){
-            if (item.name===role){
-                return item.name
+            if (item.id===role){
+                return item
             }
         }
-        return []
+        return null
     },
     getRolesList() {
-        let rolesList:Array<String> = []
-        for(const item of roles) {
-            rolesList.push(item.name)
-        }
-        return rolesList
+       return roles
     }
 }

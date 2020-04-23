@@ -7,6 +7,7 @@ import {ApolloError} from "apollo-server-errors";
 import {EntityUpdateHelper} from "../EntityUpdateHelper";
 import * as bcrypt from "bcrypt";
 import {RoleConfig} from "../roles/RoleConfig";
+import {GQLAdminRole} from ".."
 
 const AdminDataBaseResolver = createAdminResolver(
     {
@@ -52,22 +53,22 @@ export class AdminDataResolver extends AdminDataBaseResolver {
         await entity.save()
         return entity
     }
-    @Authorized('admin')
-    @Query(type=>[String])
-    async getRoles(){
-        return RoleConfig.getRolesList()
-    }
+
 
     @FieldResolver(type=>[String])
     permissions(@Root() admin:Administrator){
         return RoleConfig.getPermissions(admin.role)
     }
-
-    @FieldResolver(type=>String)
-    async role(@Root() admin:Administrator) {
-        return RoleConfig.getRole(admin.role)
+    @Authorized('admin')
+    @Query((type) => [GQLAdminRole])
+    async getRoles() {
+        return RoleConfig.getRolesList()
     }
 
+    @FieldResolver((type) => String,{nullable:true})
+    async role(@Root() admin: Administrator) {
+        return RoleConfig.getRole(admin.role)?.id
+    }
 
 
 }
