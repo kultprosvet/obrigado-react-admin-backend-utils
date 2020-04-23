@@ -140,7 +140,7 @@ export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
         ) {
             return this.getOne(id,context)
         }
-        async getOne(id,context:any)
+        async getOne(id:string,context:any)
         {
             let where:ObjectLiteral={}
             where[this.primaryKey]=id

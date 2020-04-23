@@ -6,7 +6,8 @@ import {getJWTToken} from "..";
 import * as bcrypt from 'bcrypt'
 import {GQLLogoutResult} from "../types/GQLLogoutResult";
 import * as moment from "moment";
-
+import {Resolver}  from "type-graphql";
+@Resolver()
 export class AdminAuthResolver{
     @Mutation(type=>GQLAdministrator)
     async adminLogin(@Arg('username') username:string,@Arg('password') password:string, @Ctx() ctx:any){

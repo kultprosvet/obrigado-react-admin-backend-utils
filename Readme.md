@@ -32,10 +32,10 @@ example:
 3. Add helpers to server config 
 ```javascript
 import {
-    AdminAuthResolver,
-    AdminDataResolver,
     getAdministratorData,
 } from 'obrigado-react-admin-backend-utils'
+import { AdminDataResolver } from 'obrigado-react-admin-backend-utils/dist/resolvers/AdminDataResolver'
+import { AdminAuthResolver } from 'obrigado-react-admin-backend-utils/dist/resolvers/AdminAuthResolver'
 ...
    const schema = await buildSchema({
         resolvers: [
@@ -132,16 +132,18 @@ export class User extends BaseEntity {
 Now you can call createBaseCrudResolver(GraphQLModelClass, GraphQLInputClass, TypeORMEntityClass) to generate resolver class for User entity:
 ```javascript
 import { Resolver } from 'type-graphql'
-import { createBaseCrudResolver } from 'obrigado-react-admin-backend-utils'
+import { createAdminResolver } from 'obrigado-react-admin-backend-utils'
 import { UserGraphQL } from '../graphql/UserGraphQL'
 import { UserGraphQLInput } from "../graphql/UserGraphQLInput"
 import { User } from '../models/UserEntity'
 
-const UserBaseResolver = createBaseCrudResolver(
-    UserGraphQL,
-    UserGraphQLInput,
-    User
-)
+const UserBaseResolver == createAdminResolver(
+                            {
+                                entity:User,
+                                return:UserGraphQL,
+                                create:UserGraphQLInput,
+                                update:UserGraphQLInput
+                            }) 
 @Resolver()
 export class _UserResolver extends UserBaseResolver {}
 ```

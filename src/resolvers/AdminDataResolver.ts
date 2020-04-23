@@ -1,4 +1,4 @@
-import {createBaseCrudResolver} from "../BaseAdminResourceResolver";
+import {createAdminResolver, createBaseCrudResolver} from "../BaseAdminResourceResolver"
 import {Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root} from "type-graphql";
 import {GQLAdministrator} from "../types/GQLAdministrator";
 import {GQLAdministratorInput} from "../types/GQLAdministratorInput";
@@ -8,11 +8,14 @@ import {EntityUpdateHelper} from "../EntityUpdateHelper";
 import * as bcrypt from "bcrypt";
 import {RoleConfig} from "../roles/RoleConfig";
 
-const AdminDataBaseResolver = createBaseCrudResolver(
-    GQLAdministrator,
-    GQLAdministratorInput,
-    Administrator
-)
+const AdminDataBaseResolver = createAdminResolver(
+    {
+        entity:Administrator,
+        return:GQLAdministrator,
+        create:GQLAdministratorInput,
+        update:GQLAdministratorInput
+    })
+
 @Resolver(type=>GQLAdministrator)
 export class AdminDataResolver extends AdminDataBaseResolver {
 
