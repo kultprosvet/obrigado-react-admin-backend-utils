@@ -4,3 +4,4 @@ doc
 examples
 *.iml
 node_modules
+.idea

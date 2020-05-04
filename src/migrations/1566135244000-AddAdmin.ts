@@ -5,15 +5,10 @@ export class AddAdmin1566135244000 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<any> {
         let admin=await createQueryBuilder(Administrator).select("username").where("username=:name",{name:'admin'}).getRawOne()
         if (admin==null) {
-            await createQueryBuilder()
-                .insert()
-                .into(Administrator)
-                .values({
-                    first_name: 'Admin',
-                    last_name: 'Admin',
-                    username: 'admin',
-                    password: bcrypt.hashSync('admin#12345', 10),
-                }).execute()
+            await queryRunner.query(
+                `insert into administrators (first_name,last_name,username,password)
+VALUES ('Admin','Admin','admin','${bcrypt.hashSync('admin#12345', 10)}')`,
+            )
         }
     }
 
