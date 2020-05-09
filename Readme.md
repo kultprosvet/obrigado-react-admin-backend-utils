@@ -3,6 +3,7 @@ To speed up admin panel development use [obrigado frontend helpers](https://gith
 # Requirments
 + Typeorm
 + Typegraphql
++ bcrypt
 # Installation
 Install package:
 ```
