@@ -178,6 +178,7 @@ createAdminResolver generates class with  the following methods
 | updateManyMutation | updateMany            |
 | deleteMutation     | delete                |
 | deleteManyMutation | deleteMany            |
+
 "Defenition" methods calls implementations methods with same params and contains only typegraphql decorators.
 So if you want to override logic override implementation methods (most of your cases):
 ```javascript
