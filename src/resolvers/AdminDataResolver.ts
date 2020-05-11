@@ -20,14 +20,10 @@ const AdminDataBaseResolver = createAdminResolver(
 @Resolver(type=>GQLAdministrator)
 export class AdminDataResolver extends AdminDataBaseResolver {
 
-    @Authorized('admin')
-    @Mutation(type => GQLAdministrator, { name: `adminAdministratorUpdate` })
     async update(
-        @Arg('id', type => Int)
             id: number,
-        @Arg('data', type => GQLAdministratorInput)
             data: GQLAdministratorInput,
-        @Ctx() context:any
+        context:any
     ) {
         // @ts-ignore
         let entity = await Administrator.findOne({ where: { id } })
@@ -42,9 +38,8 @@ export class AdminDataResolver extends AdminDataBaseResolver {
         await entity.save()
         return entity
     }
-    @Authorized('admin')
-    @Mutation(type => GQLAdministrator, { name: `adminAdministratorCreate` })
-    async create(@Arg('data', type => GQLAdministratorInput) data: GQLAdministratorInput,@Ctx() context:any) {
+
+    async create(data: GQLAdministratorInput, context:any) {
         // @ts-ignore
         let entity = new Administrator()
         await EntityUpdateHelper.update(entity, data,{ignore:['password']})
@@ -53,7 +48,6 @@ export class AdminDataResolver extends AdminDataBaseResolver {
         await entity.save()
         return entity
     }
-
 
     @FieldResolver(type=>[String])
     permissions(@Root() admin:Administrator){

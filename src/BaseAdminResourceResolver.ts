@@ -28,27 +28,12 @@ import {IdsList} from "./types/IdsList";
 import {ReactAdminDataProvider} from "./types/ReactAdminDataProvider";
 import {ReturnTypeFuncValue} from "type-graphql/dist/decorators/types"
 
-/*
-import {GQLAdministrator} from "./types/GQLAdministrator"
-import {GQLAdministratorInput} from "./types/GQLAdministratorInput"
-import {Administrator} from "./models/Administrator"
-const ZZZ=createAdminResolver({
-    return:GQLAdministrator,
-    create:GQLAdministratorInput,
-    entity:Administrator
-})
-class XXX extends ZZZ {
-up
-}*/
-
-
-
-
 export function createBaseCrudResolver<
     ReturnType extends  ReturnTypeFuncValue,
     CreateType extends ReturnTypeFuncValue ,
-    EntityType  extends TypeOrmObjectType<any> | EntitySchema<any>
+    EntityType  extends ClassType
 >(objectTypeCls: ClassType<ReturnType>, inputTypeCls: ClassType<CreateType>, ORMEntity: EntityType, updateHelperOptions?:Partial<EntityUpdateHelperOptions>):ClassType<ReactAdminDataProvider<ReturnType,CreateType,CreateType>> {
+    console.warn("createBaseCrudResolver is deprececated")
 return createAdminResolver({
     create:inputTypeCls,
     update:inputTypeCls,
@@ -58,26 +43,36 @@ return createAdminResolver({
 })
 }
 
+/**
+ * Generates base class for your resolver
+ * @param config Resolver config
+ */
 export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
     CreateType extends ReturnTypeFuncValue,
     UpdateType extends ReturnTypeFuncValue,
-    EntityType extends TypeOrmObjectType<any> | EntitySchema<any>>(config:{
+    EntityType extends  EntitySchema<any>>(config:{
+    /** GQL type which resolver returns*/
     return:ReturnType,
+    /** name part of all resolver methods*/
+    name?:string,
+    /** GQL  input type for entity creation*/
     create:ClassType<CreateType>,
+    /** GQL  input type for entity update,optional*/
     update?: ClassType<UpdateType>,
-    entity:EntityType,
+    /** TypeOrm Entity class*/
+    entity:ClassType,
     updateHelperOptions?:Partial<EntityUpdateHelperOptions>
-}): ClassType<ReactAdminDataProvider<EntityType,CreateType,UpdateType>>{
-
+}): ClassType<ReactAdminDataProvider<EntityType,CreateType,UpdateType extends undefined?CreateType:UpdateType>>{
 
     const ORMEntity=config.entity
     const ReturnGQLClass=config.return
     const CreateGQLClass=config.create
     const UpdateGQLClass=config.update || config.create
     // @ts-ignore
-    const suffix =ORMEntity.name
+    const suffix =name || ORMEntity.name
     const updateHelperOptions=config.updateHelperOptions
-    let entityAlias = suffix.toLowerCase()
+    //@ts-ignore
+    let entityAlias = ORMEntity.name.toLowerCase()
     @ObjectType(`${suffix}List`)
     class OutList {
         @Field(type => [ReturnGQLClass], { nullable: true })
@@ -419,3 +414,19 @@ export async function validateEntityRelations<ORM extends BaseEntity>(
     //@ts-ignore
     return dataCounts
 }
+
+/*
+import {GQLAdministrator} from "./types/GQLAdministrator"
+import {GQLAdministratorInput} from "./types/GQLAdministratorInput"
+import {Administrator} from "./models/Administrator"
+const ZZZ=createAdminResolver({
+    return:GQLAdministrator,
+    create:GQLAdministratorInput,
+    update:GQLAdministrator,
+    entity:Administrator
+})
+class YYYY extends ZZZ{
+    async update(id: number, data: GQLAdministrator extends undefined ? GQLAdministratorInput : GQLAdministrator, context?: any): Promise<any> {
+        return super.update(id, data, context)
+    }
+}*/

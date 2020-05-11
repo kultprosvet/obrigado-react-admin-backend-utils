@@ -3,7 +3,7 @@ To speed up admin panel development use [obrigado frontend helpers](https://gith
 # Requirments
 + Typeorm
 + Typegraphql
-+ bcrypt
++ bcrypt (if you are goind to use auth )
 # Installation
 Install package:
 ```
@@ -143,12 +143,11 @@ const UserBaseResolver == createAdminResolver(
                                 entity:User,
                                 return:UserGraphQL,
                                 create:UserGraphQLInput,
-                                update:UserGraphQLInput
                             }) 
 @Resolver()
 export class _UserResolver extends UserBaseResolver {}
 ```
-This will generate a resolver with following methods:
+This will generate a resolver with following graphql mutation and queries:
 + adminUserGetList
 + adminUserGetOne
 + adminUserCreate
@@ -157,20 +156,72 @@ This will generate a resolver with following methods:
 + adminUserGetManyReference
 + adminUserDelete
 + adminUserDeleteMany
-
+### createAdminResolver config params
+| param  | required |description   |
+|---|---|------|
+| entity  | yes   | TypeOrm entity class|
+| return  | yes   | TypeGraphQL ObjectType returned by getList,getOne,getMany|
+| create  | yes   | TypeGraphQL InputType param for create |
+| update  | no    | TypeGraphQL InputType param for update, if not specified create is used|
+| name    | no    | string name part of generated method, if not specified entity name is used. Example: admin\[Name\]UpdateMany
+|updateHelperOptions| no| UpdateHelper options : {ignore,fileHandler}. ignore: string[] - list of fields to ignore. fileHandler - handler class for files processing|
+### Overriding AdminResolver methods
+createAdminResolver generates class with  the following methods
+| definitions methods| implementation methods|
+|--------------------|-----------------------|
+| getListQuery       | getList               |
+| getOneQuery        | getOne                |
+| getManyQuery       | getMany               |
+| getManyReferenceQuery| getManyReference    |
+| createMutation     | create                |
+| updateMutation     | update                |
+| updateManyMutation | updateMany            |
+| deleteMutation     | delete                |
+| deleteManyMutation | deleteMany            |
+"Defenition" methods calls implementations methods with same params and contains only typegraphql decorators.
+So if you want to override logic override implementation methods (most of your cases):
+```javascript
+const UserBaseResolver == createAdminResolver(
+                            {
+                                entity:User,
+                                return:UserGraphQL,
+                                create:UserGraphQLInput,
+                            }) 
+@Resolver()
+export class _UserResolver extends UserBaseResolver {
+            async getList( params: GQLReactAdminListParams, @Ctx() context:any){
+            // your logic 
+            }
+}
+```
+As you can see you don't need to put typegraphl decorators.
+If want to override method name in graphql, auth logic etc, then you need to override definition method:
+```javascript
+ export class _UserResolver extends UserBaseResolver {
+        @Authorized('admin')
+         @Query(type =>UserList, {
+             name: `adminUserList`,
+         })
+         async getListQuery(
+             @Arg('params', type => GQLReactAdminListParams)
+                 params: GQLReactAdminListParams,
+             @Ctx() context:any
+         ) {
+             return this.getList(params,context)
+         }
+          
+ }
+```
+ if you want to alter filtering login in getList you don't need to override whole method, just override  alterGetListQuery
 ### Entities with file handling
 If you want your entity to handle files as well you can pass options with File Handler to createBaseCrudResolver as a last argument. 
 
 You can find more on how to configure available File Handlers here:
 + [File Handlers](doc/FileHandlers.md)
 
-### Creating or re-defining resolver methods
-On top of the existing methods you can add your own methods or re-define already existing ones.
+### Creating or re-defining resolver methods in AdminsResolvers
 
-If you want to implement your own filter logic you can redefine applyFilterToQuery method that is added to your entity by createBaseCrudResolver function. By default this method does full-text search.
-
-You can also re-define existing methods in AdminAuthResolver and AdminDataResolver to implement you own authentication logic.
-
+You can  re-define existing methods in AdminAuthResolver and AdminDataResolver to implement you own authentication logic.
 AdminAuthResolver and AdminDataResolver have the following methods:
 + adminLogin
 + adminCheck
