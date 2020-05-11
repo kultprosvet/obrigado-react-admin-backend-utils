@@ -190,7 +190,7 @@ const UserBaseResolver == createAdminResolver(
                             }) 
 @Resolver()
 export class _UserResolver extends UserBaseResolver {
-            async getList( params: GQLReactAdminListParams, @Ctx() context:any){
+            async getList( params: GQLReactAdminListParams,  context:any){
             // your logic 
             }
 }
