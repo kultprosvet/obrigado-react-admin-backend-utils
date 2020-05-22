@@ -39,7 +39,7 @@ export class LocalFileHandler implements FileHandler{
         let buff = new Buffer(file.body.replace(/^data.*base64,/, ''), 'base64')
         let dir = this.config.folder
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir)
+            fs.mkdirSync(dir, { recursive: true })
         }
 
         let fileName = `${uuidv1()}${ext}`
