@@ -1,3 +1,9 @@
+<div>	
+	<a href="https://badge.fury.io/js/obrigado-react-admin-backend-utils">
+		<img src="https://badge.fury.io/js/obrigado-react-admin-backend-utils.svg">
+	</a>
+</div>	
+
 Set of helpers for [React Admin](https://github.com/marmelab/react-admin)\
 To speed up admin panel development use [obrigado frontend helpers](https://github.com/kultprosvet/obrigado-react-admin-frontend-utils)
 # Requirments
@@ -178,6 +184,7 @@ createAdminResolver generates class with  the following methods
 | updateManyMutation | updateMany            |
 | deleteMutation     | delete                |
 | deleteManyMutation | deleteMany            |
+
 "Defenition" methods calls implementations methods with same params and contains only typegraphql decorators.
 So if you want to override logic override implementation methods (most of your cases):
 ```javascript
@@ -189,7 +196,7 @@ const UserBaseResolver == createAdminResolver(
                             }) 
 @Resolver()
 export class _UserResolver extends UserBaseResolver {
-            async getList( params: GQLReactAdminListParams, @Ctx() context:any){
+            async getList( params: GQLReactAdminListParams,  context:any){
             // your logic 
             }
 }
