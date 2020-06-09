@@ -69,7 +69,7 @@ export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
     const CreateGQLClass=config.create
     const UpdateGQLClass=config.update || config.create
     // @ts-ignore
-    const suffix =name || ORMEntity.name
+    const suffix =config.name || ORMEntity.name
     const updateHelperOptions=config.updateHelperOptions
     //@ts-ignore
     let entityAlias = ORMEntity.name.toLowerCase()
