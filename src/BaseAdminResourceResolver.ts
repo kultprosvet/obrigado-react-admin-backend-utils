@@ -103,7 +103,7 @@ export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
             if (params.filter) {
                 this.applyFilterToQuery(query, params, metadata,context)
             }
-            this.alterGetListQuery(query, params)
+            await this.alterGetListQuery(query, params)
             let total = await query.getCount()
             if (params.pagination) {
                 query
@@ -303,8 +303,8 @@ export function createAdminResolver<ReturnType extends ReturnTypeFuncValue,
             }
             return { ids: removedIds }
         }
-        alterGetListQuery(
-            qb: SelectQueryBuilder<any>,
+        async alterGetListQuery(
+            qb: SelectQueryBuilder<EntityType>,
             params: GQLReactAdminListParams,
         ) {}
         applyFilterToQuery(
