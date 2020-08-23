@@ -188,7 +188,7 @@ createAdminResolver generates class with  the following methods
 "Defenition" methods calls implementations methods with same params and contains only typegraphql decorators.
 So if you want to override logic override implementation methods (most of your cases):
 ```javascript
-const UserBaseResolver == createAdminResolver(
+const UserBaseResolver = createAdminResolver(
                             {
                                 entity:User,
                                 return:UserGraphQL,
