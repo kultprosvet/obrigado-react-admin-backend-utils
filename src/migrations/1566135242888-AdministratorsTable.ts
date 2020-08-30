@@ -1,11 +1,35 @@
 import { MigrationInterface, QueryRunner, TableIndex } from 'typeorm'
+import {Table} from "typeorm/index"
 
 export class AdministratorsTable1566135242888 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.query(
-            'CREATE TABLE `administrators` (`id` int NOT NULL AUTO_INCREMENT, `username` varchar(255) NOT NULL, `last_name` varchar(255) NULL, `first_name` varchar(255) NULL, `password` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB'
-        )
+        await queryRunner.createTable(new Table({
+            name: "administrators",
+            columns: [
+                {
+                    name: "id",
+                    type: "int",
+                    isPrimary: true
+                },
+                {
+                    name: "username",
+                    type: "varchar",
+                },
+                {
+                    name: "last_name",
+                    type: "varchar",
+                },
+                {
+                    name: "first_name",
+                    type: "varchar",
+                },
+                {
+                    name: "password",
+                    type: "varchar",
+                }
 
+            ]
+        }), true)
         await queryRunner.createIndex(
             'administrators',
             new TableIndex({
