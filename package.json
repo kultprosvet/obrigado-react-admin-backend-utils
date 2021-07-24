@@ -34,7 +34,7 @@
     "type-graphql": "0.17.x",
     "typeorm": "0.2.x",
     "graphql": "14.x",
-    "bcrypt": "4.x"
+    "bcrypt": "^5.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
